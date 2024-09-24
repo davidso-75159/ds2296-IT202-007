@@ -6,14 +6,14 @@ $a4 = [10.01, -12.22, 0.23, 19.20, -5.13, 3.12];
 function getTotal($arr) {
     echo "<br>Processing Array:<br><pre>" . var_export($arr, true) . "</pre>";
     $total = 0.00;
-    //start edits
+    //ds2296; 9/23/2024
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO do adding here
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
     foreach ($arr as $num) {
         $total += $num;
     }
-    $total = (int)($total * 100) / 100;
+    $total = round($total, 2);
     //end edits
     echo "The total is $total";
 }
