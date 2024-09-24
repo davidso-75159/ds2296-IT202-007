@@ -13,8 +13,8 @@ function bePositive($arr) {
     //TODO Take each value of the $arr, convert it to positive, and set it to the same index in the $output array but with the original data type (i.e., if the source was a string the output slot value should be a string)
     for ($i = 0; $i < count($arr); $i++) {
         if (is_string($arr[$i]) == true){
-            $output[$i] = (int) abs($arr[$i]);
-            $output[$i] = (float)($output[$i]);
+            $output[$i] = abs((int)$arr[$i]);
+            $output[$i] = (string)($output[$i]);
         } else {
             $output[$i] = abs($arr[$i]);
         }
