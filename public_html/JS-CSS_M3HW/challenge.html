@@ -8,6 +8,7 @@
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
             //TODO: add any extra onload processing you may need here (hint: you'll likely want to start here for the JS challenge)
+            //ds2296, Sep 30, 2024
             var links = document.getElementsByTagName('a');
                 for (let i = 0; i < links.length; i++) {
                     links[i].onclick = function(event) {
@@ -25,23 +26,25 @@
         }
     </script>
     <style>
-        /* TODO: make style edits here */
+        /* ds2296, Sep 30, 2024 */
         h1, h2 {
             font-family: Arial, Helvetica, sans-serif;
+            text-transform: capitalize;
         }
-
+        /* ds2296, Sep 30, 2024 */
         nav li {
             display: inline;
             background-color: seagreen;
             font-family: Arial, Helvetica, sans-serif;
             padding: 1%;
+            text-transform: capitalize;
             
         }
-        
+        /* ds2296, Sep 30, 2024 */
         a::before {
             content: "✓ ";
         }
-        
+        /* ds2296, Sep 30, 2024 */
         a:hover{
             color: crimson;
         }
