@@ -8,37 +8,44 @@
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
             //TODO: add any extra onload processing you may need here (hint: you'll likely want to start here for the JS challenge)
+            var links = document.getElementsByTagName('a');
+                for (let i = 0; i < links.length; i++) {
+                    links[i].onclick = function(event) {
+                        const linkText = links[i].innerText;
+                        updateCurrentPage(linkText);
+                    };
+                }
         });
         function getCurrentSelection() {
             setTimeout(() => {
                 //added this delay here as some solutions may require it to update properly (i.e., click code may complete before the navigation changes)
                 //TODO: add code for processing the current selection (this section isn't mandatory for all solutions)
-                
                 //Note: likely you'll want to call updateCurrentPage towards the end
             }, 100);
         }
     </script>
     <style>
         /* TODO: make style edits here */
-        h2 {
+        h1, h2 {
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        nav {
+        nav li {
             display: inline;
-            list-style-type: none;
-            background-color: grey;
+            background-color: seagreen;
             font-family: Arial, Helvetica, sans-serif;
+            padding: 1%;
+            
+        }
+        
+        a::before {
+            content: "✓ ";
+        }
+        
+        a:hover{
+            color: crimson;
         }
 
-        nav ::before {
-            content: "✓";
-            color: crimson;
-            font-size: 1.1em;
-            position: absolute;
-            left: -15px;
-            top: 0;
-        }
     </style>
     <!-- make the necessary edits above this line -->
     <!-- Do not edit anything below this line, doing so will lose points-->
