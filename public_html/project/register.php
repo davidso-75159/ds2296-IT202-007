@@ -23,11 +23,4 @@
 </script>
 <?php
  //TODO 2: add PHP Code
- if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
-
- }
-
- $email = $_POST["email"];
- $password = $_POST["password"];
- $confirm = $_POST["confirm"]
 ?>
