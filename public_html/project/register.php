@@ -1,3 +1,6 @@
+<?php
+require(__DIR__."/../../lib/functions.php");
+?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
@@ -23,4 +26,61 @@
 </script>
 <?php
  //TODO 2: add PHP Code
+ if (isset($_POST["email"])
+    && isset($_POST["password"]) && isset($_POST["confirm"])) {
+    // false returns so we can set it to a variable
+    $email = se($_POST, "email", "", false);
+    $password = se($_POST, "password", "", false);
+    $confirm = se($_POST, "confirm", "", false);;
+    
+    // TODO 3: validate/use
+    $hasError = false;
+    if (empty($email)) {
+        echo "Email must not be empty";
+        $hasError = true;
+    }
+
+    if (empty($password)) {
+        echo "Password must not be empty";
+        $hasError = true;
+    }
+
+    if (empty($confirm)) {
+        echo "Confirm password must not be empty";
+        $hasError = true;
+    }
+
+    if (strlen($password) < 8) {
+        echo "Password too short";
+        $hasError = true;
+    }
+
+    if ($password !== $confirm) {
+        echo "Passwords must match";
+        $hasError = true;
+    }
+
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email address";
+        $hasError = true;
+    }
+
+    if (!$hasError){
+        // comment out the "welcome" line above
+        // TODO 4: Hash password before storing
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $db = getDB(); // available due to the `require()` of `functions.php`
+        // Code for inserting user data into the database
+        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password)");
+        try{
+          $stmt->execute([':email' => $email, ':password' => $hashed_password]);
+          echo "Successfully registered!";
+        }
+        catch(Exception $e){
+          echo "There was an error registering<br>";
+          echo "<pre>" . var_export($e, true) . "</pre>";
+        }
+      }
+}
 ?>
