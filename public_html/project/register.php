@@ -1,5 +1,5 @@
 <?php
-require(__DIR__."/../../partials/nav.php");
+require(__DIR__."/../../lib/functions.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
@@ -60,10 +60,9 @@ require(__DIR__."/../../partials/nav.php");
         $hasError = true;
     }
 
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $email = sanitize_email($email);
+    if (!is_valid_email($email)) {
         echo "Invalid email address";
-        $hasError = true;
     }
 
     if (!$hasError){

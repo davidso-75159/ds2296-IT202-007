@@ -32,12 +32,10 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         echo "Email must not be empty";
         $hasError = true;
     }
-    //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+    $email = sanitize_email($email);
+    if (!is_valid_email($email)) {
         echo "Invalid email address";
-        $hasError = true;
     }
     if (empty($password)) {
         echo "password must not be empty";
@@ -59,7 +57,9 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     $hash = $user["password"];
                     unset($user["password"]);
                     if (password_verify($password, $hash)) {
-                        echo "Welcome $email";
+                        $_SESSION["user"] = $user;
+                        die(header("Location: home.php"));
+
                     } else {
                         echo "Invalid password";
                     }
