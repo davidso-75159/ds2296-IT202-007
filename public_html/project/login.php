@@ -29,20 +29,20 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     //TODO 3
     $hasError = false;
     if (empty($email)) {
-        echo "Email must not be empty";
+        flash("Email must not be empty");
         $hasError = true;
     }
 
     $email = sanitize_email($email);
     if (!is_valid_email($email)) {
-        echo "Invalid email address";
+        flash("Invalid email address");
     }
     if (empty($password)) {
-        echo "password must not be empty";
+        flash("password must not be empty");
         $hasError = true;
     }
     if (strlen($password) < 8) {
-        echo "Password too short";
+        flash("Password too short");
         $hasError = true;
     }
     if (!$hasError) {
@@ -61,15 +61,16 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         die(header("Location: home.php"));
 
                     } else {
-                        echo "Invalid password";
+                        flash("Invalid password");
                     }
                 } else {
-                    echo "Email not found";
+                    flash("Email not found");
                 }
             }
         } catch (Exception $e) {
-            echo "An error occurred: " . $e->getMessage();
+            flash("An error occurred: " . $e->getMessage());
         }
     }
 }
+require(__DIR__."/../../partials/flash.php");
 ?>
