@@ -32,3 +32,4 @@ function se($v, $k = null, $default = "", $isEcho = true) {
 function safer_echo($v, $k = null, $default = "", $isEcho = true){
   return se($v, $k, $default, $isEcho);
 }
+?>
