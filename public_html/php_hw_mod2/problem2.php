@@ -13,7 +13,7 @@ function getTotal($arr) {
     foreach ($arr as $num) {
         $total += $num;
     }
-    $total = round($total, 2);
+    $total = number_format("%0.2f", $total);
     //end edits
     echo "The total is $total";
 }

@@ -25,11 +25,29 @@ function processCars($cars) {
     
     // Note: use the $cars variable to iterate over, don't directly touch $a1-$a4
     // TODO add logic here to create a new array with original properties plus age and isClassic
-    $currentYear = null; // determine current year
+    $currentYear = 2024; // determine current year
     $processedCars = []; // result array
     $classic_age = 25; // don't change this value
     // Start edits
-   
+    foreach($cars as $car) {
+        foreach($car as $id => $value) {
+            $processedCars[$id] = [$value];
+        }
+        foreach($car as $make => $value) {
+            $processedCars[$make] = [$value];
+        }
+        foreach($car as $model => $value) {
+            $processedCars[$model] = [$value];
+        }
+        foreach($car as $year => $value) {
+            $processedCars[$year] = [$value];
+            $age = ($year - $currentYear);
+            $isClassic = ($age >= 25);
+            $processedCars["age"] = [$age];
+            $processedCars["isClassic"] = [$isClassic];
+        }
+        
+    }
     // End edits
     echo "<pre>" . var_export($processedCars, true) . "</pre>";
     
