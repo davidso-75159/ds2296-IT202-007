@@ -49,8 +49,21 @@ function joinArrays($users, $activities) {
     // TODO add logic here to join the arrays on userId
     $joined = []; // result array
     // Start edits
-    
-
+    for ($i = 0; $i < count($users); $i++) {
+        $userId = $users[$i]['userId'];
+        // Search for the corresponding activity
+        for ($j = 0; $j < count($activities); $j++) {
+            if ($activities[$j]['userId'] == $userId) {
+                $joined[] = [
+                    "userId" => $userId,
+                    "name" => $users[$i]['name'],
+                    "age" => $users[$i]['age'],
+                    "activity" => $activities[$j]['activity']
+                ];
+                break; // Stop searching once the activity is found
+            }
+        }
+    }
     // End edits
     echo "<pre>" . var_export($joined, true) . "</pre>";
 }
