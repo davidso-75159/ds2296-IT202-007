@@ -28,15 +28,11 @@ function processBirds($birds) {
     $subset = []; // result array
     // Start edits
     foreach($birds as $bird) {
-        foreach($bird as $name => $value) {
-            $subset[$name] = [$value];
-        }
-        foreach($bird as $color => $value) {
-            $subset[$color] = [$value];
-        }
-        foreach($bird as $region => $value) {
-            $subset[$region] = [$value];
-        }
+        $subset[] = [
+            'name' => $bird['name'],
+            'color' => $bird['color'],
+            'region' => $bird['region']
+        ];
     }
     // End edits
     echo "<pre>" . var_export($subset, true) . "</pre>";
