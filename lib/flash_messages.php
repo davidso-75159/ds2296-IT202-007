@@ -1,6 +1,5 @@
 <?php
-function flash($msg = "", $color = "info")
-{
+function flash($msg = "", $color = "info") {
     $message = ["text" => $msg, "color" => $color];
     if (isset($_SESSION['flash'])) {
         array_push($_SESSION['flash'], $message);
@@ -10,8 +9,7 @@ function flash($msg = "", $color = "info")
     }
 }
 
-function getMessages()
-{
+function getMessages() {
     if (isset($_SESSION['flash'])) {
         $flashes = $_SESSION['flash'];
         $_SESSION['flash'] = array();
