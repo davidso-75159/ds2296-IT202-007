@@ -1,23 +1,59 @@
 .alert-success {
-    background-color: green
+    background-color: green;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .alert-warning {
     background-color: yellow;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .alert-danger {
     background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .alert-info {
     background-color: orange;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
 }
-nav li{display: inline; background-color: seagreen;}
-nav li a{color: crimson}
-input{border-radius: 10%;}
-body{
+
+nav li {
+    display: inline-block;
+    background-color: seagreen;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+nav li a {
+    color: crimson;
+    text-decoration: none;
+}
+
+input {
+    display: block;
+    width: 300px;
+    margin: 0 auto 10px auto;
+    padding: 5px;
+    border-radius: 5%;
+    border: 1px solid seagreen;
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
     background-color: silver;
     color: seagreen;
-
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }

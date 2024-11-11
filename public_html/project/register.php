@@ -23,10 +23,7 @@ reset_session();
 </form>
 <script>
     function validate(form) {
-        //TODO 1: implement JavaScript validation
-        //ensure it returns false for an error and true for success
-
-        return true;
+        
     }
 </script>
 <?php

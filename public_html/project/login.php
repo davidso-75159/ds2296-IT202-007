@@ -10,16 +10,29 @@ require(__DIR__ . "/../../partials/nav.php");
         <label for="pw">Password</label>
         <input type="password" id="pw" name="password" required minlength="8" />
     </div>
-    <input type="submit" value="Login" />
+    <input type="submit" value="Login"/>
 </form>
 <script>
     function validate(form) {
-        //TODO 1: implement JavaScript validation
-        //ensure it returns false for an error and true for success
+        let un = form.username.value;
+        let pw = form.password.value;
+        let isValid = true;
 
-        //TODO update clientside validation to check if it should
-        //valid email or username
-        return true;
+        if (un.indexOf("@") !== -1) {
+            if (is_valid_email(un)) {
+                isValid = true;
+            }
+        }
+
+        if (is_valid_username(un)) {
+            isValid = true;
+        }
+
+        if (is_valid_password(pw)) {
+            isValid = true;
+        }
+
+        return isValid;
     }
 </script>
 <?php
