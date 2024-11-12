@@ -14,27 +14,36 @@ require(__DIR__ . "/../../partials/nav.php");
 </form>
 
 <script>
-    function validate(form) {
-        let un = form.email.value;
-        let pw = form.password.value;
-        let isValid = true;
+function validate(form) {
+    let unem = form.email.value;
+    let pw = form.password.value;
+    let isValid = true;
 
-        if (un.indexOf("@") !== -1) {
-            if (is_valid_email(un)) {
-                isValid = true;
-            }
-        }
-
-        if (is_valid_username(un)) {
-            isValid = true;
-        }
-
-        if (is_valid_password(pw)) {
-            isValid = true;
-        }
-
+    if (!unem || !pw) {
+        isValid = false;
+        alert("Please fill in all required fields.");
         return isValid;
     }
+
+    if (un.indexOf("@") !== -1) {
+        if (is_valid_email(unem)) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+    } else if (is_valid_username(unem)) {
+        isValid = true;
+    } else {
+        isValid = false;
+    }
+
+    if (!is_valid_password(pw)) {
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 </script>
 
 <?php
