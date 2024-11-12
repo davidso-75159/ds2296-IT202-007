@@ -29,25 +29,21 @@ function validate(form) {
     let pw = form.password.value;
     let con = form.confirm.value;
     
-    // Ensure all fields are populated
     if (em && un && pw && con) {
         let isValid = true;
         
-        // Validate email format
         if (!is_valid_email(em)) {
             flash("Invalid email format", "warning");
             isValid = false;
         }
 
-        // Validate username format
         if (!is_valid_username(un)) {
             flash("Invalid username format", "warning");
             isValid = false;
         }
 
-        // Validate password format and matching
         if (!is_valid_password(pw) || !is_valid_password(con)) {
-            flash("Invalid password format", "warning");
+            flash("Password must be at least 8 characters long.", "warning");
             isValid = false;
         } else if (pw !== con) {
             flash("Password and Confirm password must match", "warning");
