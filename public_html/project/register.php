@@ -23,7 +23,29 @@ reset_session();
 </form>
 <script>
     function validate(form) {
-        
+        let em = form.email.value;
+        let un = form.username.value;
+        let pw = form.password.value;
+        let con = form.confirm.value;
+
+        if (un.indexOf("@") !== -1) {
+            if (is_valid_email(un)) {
+                isValid = true;
+            }
+        }
+
+        if (is_valid_username(un)) {
+            isValid = true;
+        }
+
+        if (is_valid_password(pw) && is_valid_password(con)) {
+            isValid = true;
+        }
+
+        if (pw !== con) {
+            flash("Password and Confirm password must match", "warning");
+            isValid = false;
+        }
     }
 </script>
 <?php

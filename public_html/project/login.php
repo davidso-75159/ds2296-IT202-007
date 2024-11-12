@@ -14,7 +14,7 @@ require(__DIR__ . "/../../partials/nav.php");
 </form>
 <script>
     function validate(form) {
-        let un = form.username.value;
+        let un = form.email.value;
         let pw = form.password.value;
         let isValid = true;
 
