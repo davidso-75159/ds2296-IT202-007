@@ -21,14 +21,35 @@ reset_session();
     </div>
     <input type="submit" value="Register" />
 </form>
+
 <script>
     function validate(form) {
-        //TODO 1: implement JavaScript validation
-        //ensure it returns false for an error and true for success
+        let em = form.email.value;
+        let un = form.username.value;
+        let pw = form.password.value;
+        let con = form.confirm.value;
 
-        return true;
+        if (un.indexOf("@") !== -1) {
+            if (is_valid_email(un)) {
+                isValid = true;
+            }
+        }
+
+        if (is_valid_username(un)) {
+            isValid = true;
+        }
+
+        if (is_valid_password(pw) && is_valid_password(con)) {
+            isValid = true;
+        }
+
+        if (pw !== con) {
+            flash("Password and Confirm password must match", "warning");
+            isValid = false;
+        }
     }
 </script>
+
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
