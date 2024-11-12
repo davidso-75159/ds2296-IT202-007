@@ -21,6 +21,7 @@ reset_session();
     </div>
     <input type="submit" value="Register" />
 </form>
+
 <script>
     function validate(form) {
         let em = form.email.value;
@@ -48,6 +49,7 @@ reset_session();
         }
     }
 </script>
+
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {

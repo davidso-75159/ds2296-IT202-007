@@ -12,6 +12,7 @@ require(__DIR__ . "/../../partials/nav.php");
     </div>
     <input type="submit" value="Login"/>
 </form>
+
 <script>
     function validate(form) {
         let un = form.email.value;
@@ -35,6 +36,7 @@ require(__DIR__ . "/../../partials/nav.php");
         return isValid;
     }
 </script>
+
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"])) {
