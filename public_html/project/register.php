@@ -24,30 +24,38 @@ reset_session();
 
 <script>
     function validate(form) {
-        let em = form.email.value;
-        let un = form.username.value;
-        let pw = form.password.value;
-        let con = form.confirm.value;
-
-        if (un.indexOf("@") !== -1) {
-            if (is_valid_email(un)) {
-                isValid = true;
-            }
+    let em = form.email.value;
+    let un = form.username.value;
+    let pw = form.password.value;
+    let con = form.confirm.value;
+    
+    if (em && un && pw && con) {
+        let isValid = true;
+        
+        if (!is_valid_email(em)) {
+            flash("Invalid email format", "warning");
+            isValid = false;
         }
 
-        if (is_valid_username(un)) {
-            isValid = true;
+        if (!is_valid_username(un)) {
+            flash("Invalid username format", "warning");
+            isValid = false;
         }
 
-        if (is_valid_password(pw) && is_valid_password(con)) {
-            isValid = true;
-        }
-
-        if (pw !== con) {
+        if (!is_valid_password(pw) || !is_valid_password(con)) {
+            flash("Password must be at least 8 characters long.", "warning");
+            isValid = false;
+        } else if (pw !== con) {
             flash("Password and Confirm password must match", "warning");
             isValid = false;
         }
+
+        return isValid;
+    } else {
+        flash("All fields are required", "warning");
+        return false;
     }
+}
 </script>
 
 <?php
