@@ -83,7 +83,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         $hasError = true;
     }
     if (!is_valid_password($password)) {
-        flash("Password too short");
+        flash("Password must be at least 8 characters long.");
         $hasError = true;
     }
     if (!$hasError) {

@@ -33,12 +33,12 @@ function validate(form) {
         let isValid = true;
         
         if (!is_valid_email(em)) {
-            flash("Invalid email format", "warning");
+            flash("Invalid email format. Must contain '@'.", "warning");
             isValid = false;
         }
 
         if (!is_valid_username(un)) {
-            flash("Invalid username format", "warning");
+            flash("Username must only contain 3-16 characters a-z, 0-9, ., _, or -", "warning");
             isValid = false;
         }
 
@@ -79,7 +79,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $hasError = true;
     }
     if (!is_valid_username($username)) {
-        flash("Username must only contain 3-16 characters a-z, 0-9, _, or -", "danger");
+        flash("Username must only contain 3-16 characters a-z, 0-9, ., _, or -", "danger");
         $hasError = true;
     }
     if (empty($password)) {
