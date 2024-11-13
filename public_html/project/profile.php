@@ -46,7 +46,6 @@ if (isset($_POST["save"])) {
         }
     }
 
-
     //check/update password
     $current_password = se($_POST, "currentPassword", null, false);
     $new_password = se($_POST, "newPassword", null, false);
@@ -121,7 +120,7 @@ $username = get_username();
     <input type="submit" value="Update Profile" name="save" />
 </form>
 
-<script>
+<script> // ds2296, 11/13/2024
     function validate(form) {
         let pw = form.newPassword.value;
         let con = form.confirmPassword.value;
