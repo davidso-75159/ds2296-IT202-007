@@ -1,4 +1,4 @@
-<?php
+<?php // ds2296, 11/13/2024
 session_start();
 session_unset();
 session_destroy();
