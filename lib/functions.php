@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/db.php");
 
-$BASE_PATH = '/Project';
+$BASE_PATH = '/project';
 
 require_once(__DIR__ . "/flash_messages.php");
 
