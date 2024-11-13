@@ -20,7 +20,7 @@ function validate(form) {
     let isValid = true;
 
     if (unem.length <= 0) {
-        flash("Email is required", "warning");
+        flash("Email or Username is required", "warning");
         isValid = false;
     }
 
