@@ -15,11 +15,13 @@ function flash(message = "", color = "info") {
     flash.appendChild(outerDiv);
 }
 function is_valid_email(email) {
-    return RegExp('/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/', email);
+    const regex = new RegExp('/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$/');
+    return regex.test(email);
 }
 
 function is_valid_username(username) {
-    return RegExp('/^[a-z0-9._-]{3,16}$/', username);
+    const regex = new RegExp('/^[a-z0-9._-]{3,16}$/');
+    return regex.test(username);
 }
 
 function is_valid_password(password) {
