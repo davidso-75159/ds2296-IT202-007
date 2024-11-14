@@ -17,32 +17,36 @@ require(__DIR__ . "/../../partials/nav.php");
 function validate(form) {
     let unem = form.email.value;
     let pw = form.password.value;
+    let isValid = true;
 
-    if (unem && pw) {
-        let isValid = true;
-
-        if (un.indexOf("@") !== -1) {
-            if (!is_valid_email(unem)) {
-                flash("Invalid email format.", "warning");
-                isValid = false;
-            }
-        } 
-        
-        if (!is_valid_username(unem)) {
-            flash("Invalid username format.", "warning");
-            isValid = false;
-        }
-
-        if (!is_valid_password(pw)) {
-            flash("Password must be at least 8 characters long.", "warning");
-            isValid = false;
-        }
-
-        return isValid;
-    } else {
-        flash("All fields are required", "warning");
-        return false;
+    if (unem.length <= 0) {
+        flash("Email or Username is required", "warning");
+        isValid = false;
     }
+
+    if (unem.indexOf("@") !== -1) {
+        if (!is_valid_email(unem)) {
+            flash("Invalid email format", "warning");
+            isValid = false;
+        }
+    } else {
+        if (!is_valid_username(unem)) {
+            flash("Invalid username format", "warning");
+            isValid = false;
+        }
+    }
+
+    if (pw.length <= 0) {
+        flash("Password is required", "warning");
+        isValid = false;
+    }
+
+    if (!is_valid_password(pw)) {
+        flash("Password must be at least 8 characters long.", "warning");
+        isValid = false;
+    }
+
+    return isValid;
 }
 
 </script>

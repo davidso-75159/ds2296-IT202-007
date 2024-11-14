@@ -28,33 +28,44 @@ function validate(form) {
     let un = form.username.value;
     let pw = form.password.value;
     let con = form.confirm.value;
-    
-    if (em && un && pw && con) {
-        let isValid = true;
-        
-        if (!is_valid_email(em)) {
-            flash("Invalid email format", "warning");
-            isValid = false;
-        }
+    let isValid = true;
 
-        if (!is_valid_username(un)) {
-            flash("Invalid username format", "warning");
-            isValid = false;
-        }
-
-        if (!is_valid_password(pw) || !is_valid_password(con)) {
-            flash("Password must be at least 8 characters long.", "warning");
-            isValid = false;
-        } else if (pw !== con) {
-            flash("Password and Confirm password must match", "warning");
-            isValid = false;
-        }
-
-        return isValid;
-    } else {
-        flash("All fields are required", "warning");
-        return false;
+    if (em.length <= 0) {
+        flash("Email is required", "warning");
+        isValid = false;
     }
+    
+    if (!is_valid_email(em)) {
+        flash("Invalid email format. Must contain '@'.", "warning");
+        isValid = false;
+    }
+
+    if (un.length <= 0) {
+        flash("Username is required", "warning");
+        isValid = false;
+    }
+
+    if (!is_valid_username(un)) {
+        flash("Username must only contain 3-16 characters a-z, 0-9, ., _, or -", "warning");
+        isValid = false;
+    }
+
+    if (pw.length <= 0) {
+        flash("Password must not be empty", "warning");
+        isValid = false;
+    }
+
+    if (!is_valid_password(pw) || !is_valid_password(con)) {
+        flash("Password must be at least 8 characters long.", "warning");
+        isValid = false;
+    } 
+    
+    if (pw !== con) {
+        flash("Password and Confirm password must match", "warning");
+        isValid = false;
+    }
+
+    return isValid;
 }
 </script>
 
