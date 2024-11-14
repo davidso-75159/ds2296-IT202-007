@@ -14,13 +14,14 @@ function flash(message = "", color = "info") {
     //add the element to the DOM (if we don't it merely exists in memory)
     flash.appendChild(outerDiv);
 }
+
 function is_valid_email(email) {
-    const regex = new RegExp('/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$/');
+    const regex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return regex.test(email);
 }
 
 function is_valid_username(username) {
-    const regex = new RegExp('/^[a-z0-9._-]{3,16}$/');
+    const regex = /^[a-z0-9._-]{3,16}$/;
     return regex.test(username);
 }
 
