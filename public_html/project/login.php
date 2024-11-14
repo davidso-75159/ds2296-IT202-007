@@ -31,8 +31,9 @@ function validate(form) {
         }
     } else {
         if (!is_valid_username(unem)) {
-        flash("Invalid username format", "warning");
-        isValid = false;
+            flash("Invalid username format", "warning");
+            isValid = false;
+        }
     }
 
     if (pw.length <= 0) {
