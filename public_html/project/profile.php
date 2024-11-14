@@ -121,51 +121,48 @@ $username = get_username();
 </form>
 
 <script> // ds2296, 11/13/2024
-   function validate(form) {
+function validate(form) {
     let em = form.email.value;
     let un = form.username.value;
     let op = form.currentPassword.value;
-    let np = form.newpassword.value;
+    let np = form.newPassword.value;
     let con = form.confirmPassword.value;
     let isValid = true;
 
+    // Check if email is provided
     if (em.length <= 0) {
         flash("Email is required", "warning");
         isValid = false;
-    }
-    
-    if (!is_valid_email(em)) {
+    } else if (!is_valid_email(em)) { // Check email format
         flash("Invalid email format. Must contain '@'.", "warning");
         isValid = false;
     }
 
+    // Check if username is provided
     if (un.length <= 0) {
         flash("Username is required", "warning");
         isValid = false;
-    }
-
-    if (!is_valid_username(un)) {
+    } else if (!is_valid_username(un)) { // Validate username format
         flash("Username must only contain 3-16 characters a-z, 0-9, ., _, or -", "warning");
         isValid = false;
     }
 
-    if (op.length <= 0 || np.length <= 0 || con.length <= 0) {
-        flash("Password fields must not be empty", "warning");
-        isValid = false;
-    }
+    // If any password fields are filled, check password rules
+    if (op.length > 0 && np.length > 0 && con.length > 0) {
+        if (!is_valid_password(np)) { // Validate new password length
+            flash("Password must be at least 8 characters", "warning");
+            isValid = false;
+        }
 
-    if (!is_valid_password(np)) {
-        flash("New password must be at least 8 characters long.", "warning");
-        isValid = false;
-    } 
-    
-    if (np !== con) {
-        flash("Password and Confirm password must match", "warning");
-        isValid = false;
+        if (np !== con) { // Confirm password match
+            flash("Password and confirm password must match", "warning");
+            isValid = false;
+        }
     }
 
     return isValid;
 }
+
 </script>
 
 <?php
