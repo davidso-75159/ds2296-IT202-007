@@ -1,12 +1,12 @@
 <?php
 
-function fetch_quote($symbol)
+function fetch_race($symbol)
 {
-    $data = ["function" => "GLOBAL_QUOTE", "symbol" => $symbol, "datatype" => "json"];
-    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix";
+    $data = [];
+    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix?isCurrent=true";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";
-    $result = get($endpoint, "F1_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "API_KEY", $data, $isRapidAPI, $rapidAPIHost);
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
     } else {
