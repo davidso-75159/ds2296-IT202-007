@@ -4,12 +4,12 @@ require(__DIR__ . "/../../partials/nav.php");
 $result = [];
 if (true) { // Ensure this block runs
     $data = []; // Prepare the data (if needed, populate this array)
-    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix?isCurrent=true";
+    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";
 
     // Uncomment and ensure the `get` function works as expected
-    $result = get($endpoint, "F1_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "GP_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
 
     // Debugging: Log the raw API result for inspection
     error_log("Raw API Result: " . var_export($result, true));
@@ -35,15 +35,7 @@ if (true) { // Ensure this block runs
 ?>
 <div class="container-fluid">
     <h1>Grand Prix Info</h1>
-    <p> Remember, we typically won't be frequently calling live data from our API, this is merely a quick sample. We'll want to cache data in our DB to save on API quota.
-    </p>
-    <form>
-        <div>
-            <label>Grand Prix</label>
-            <input name="grandPrix" />
-            <input type="submit" value="Fetch Race Info" />
-        </div>
-    </form>
+    <p> Remember, we typically won't be frequently calling live data from our API, this is merely a quick sample. We'll want to cache data in our DB to save on API quota. </p>
     <div class="row">
         <?php
         if (isset($result)) :

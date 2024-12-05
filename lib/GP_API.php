@@ -1,13 +1,12 @@
 <?php
-
 function fetch_race() {
     $data = []; // Prepare the data (if needed, populate this array)
-    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix?isCurrent=true";
+    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";
 
     // Uncomment and ensure the `get` function works as expected
-    $result = get($endpoint, "F1_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "GP_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
 
     // Debugging: Log the raw API result for inspection
     error_log("Raw API Result: " . var_export($result, true));
@@ -29,4 +28,6 @@ function fetch_race() {
         $result = ["error" => "API call failed or returned an unexpected response."];
         error_log("API Call Error: Status not 200 or 'response' missing.");
     }
-}
+
+    return $result;
+} ?>
