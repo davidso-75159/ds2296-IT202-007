@@ -1,12 +1,12 @@
 <?php
-function fetch_race() {
+function fetch_driver() {
     $data = []; // Prepare the data (if needed, populate this array)
-    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/grands-prix";
+    $endpoint = "https://hyprace-api.p.rapidapi.com/v1/drivers";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";
 
     // Uncomment and ensure the `get` function works as expected
-    $result = get($endpoint, "GP_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "DRIVER_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
 
     // Debugging: Log the raw API result for inspection
     error_log("Raw API Result: " . var_export($result, true));
