@@ -10,13 +10,13 @@ if (!has_role("Admin")) {
 
 <?php
 $id = se($_GET, "id", -1, false);
-//TODO handle GP fetch
+// ds2296, 12/11/2024
 foreach ($_POST as $k => $v) {
-    if (!in_array($k, ["officialName", "round", "date", "circuit", "poleman", "winner", "secondPlace", "thirdPlace"])) {
+    if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
         unset($_POST[$k]);
     }
     $race = $_POST;
-    error_log("Cleaned up POST: " . var_export($race, true));
+    error_log("Cleaned up POST: " . var_export($driver, true));
 }
 //insert data
 $db = getDB();
@@ -50,7 +50,7 @@ $races = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT officialName, round, date, circuit, poleman, winner, secondPlace, thirdPlace FROM `Drivers` WHERE id = :id";
+    $query = "SELECT firstName, lastName, birthday, code, number, nationality FROM `Drivers` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
@@ -66,22 +66,19 @@ if ($id > -1) {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_drivers.php")));
 }
-if ($races) {
+if ($drivers) {
     $form = [
-        ["type" => "text", "name" => "officialName", "placeholder" => "Grand Prix Official Name", "label" => "Grand Prix Official Name", "rules" => ["required" => "required"]],
-        ["type" => "number", "name" => "round", "placeholder" => "Round Number", "label" => "Round Number", "rules" => ["required" => "required"]],
-        ["type" => "date", "name" => "date", "placeholder" => "Race Date", "label" => "Race Date", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "circuit", "placeholder" => "Circuit Name", "label" => "Circuit Name", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "poleman", "placeholder" => "Pole Position", "label" => "Pole Position", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "winner", "placeholder" => "Race Winner", "label" => "Race Winner", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "secondPlace", "placeholder" => "P2 Finisher", "label" => "P2 Finisher", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "thirdPlace", "placeholder" => "P3 Finisher", "label" => "P3 Finisher", "rules" => ["required" => "required"]],
+        ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]],
+        ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]],
+        ["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]],
+        ["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "rules" => ["required" => "required"]],
+        ["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality", "rules" => ["required" => "required"]],
     ];
-    $keys = array_keys($races);
+    $keys = array_keys($drivers);
 
     foreach ($form as $k => $v) {
         if (in_array($v["name"], $keys)) {
-            $form[$k]["value"] = $races[$v["name"]];
+            $form[$k]["value"] = $drivers[$v["name"]];
         }
     }
 }
