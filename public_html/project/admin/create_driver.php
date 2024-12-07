@@ -9,8 +9,7 @@ if (!has_role("Admin")) {
 ?>
 
 <?php
-
-//TODO handle GP fetch
+//ds2296, 12/11/24
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $driver = [];
@@ -41,10 +40,10 @@ if (isset($_POST["action"])) {
     insert("Drivers", $drivers, ["update_duplicate" => true]);
 }
 
-//TODO handle manual create event
+//ds2296, 12/11/2024
 ?>
 <div class="container-fluid">
-    <h3>Create or Fetch Event</h3>
+    <h3>Create or Fetch Driver</h3>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link bg-success" href="#" onclick="switchTab('create')">Fetch</a>
