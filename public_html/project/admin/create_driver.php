@@ -63,8 +63,8 @@ if (isset($_POST["action"])) {
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Number", "label" => "Circuit Name", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
+            <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Number", "label" => "Number", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>

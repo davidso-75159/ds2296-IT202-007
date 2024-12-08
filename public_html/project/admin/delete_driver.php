@@ -9,7 +9,7 @@ if (!has_role("Admin")) {
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    die(header("Location: " . get_url("admin/list_races.php")));
+    die(header("Location: " . get_url("admin/list_drivers.php")));
 }
 
 $db = getDB();
@@ -22,5 +22,5 @@ try {
     error_log("Error firing driver $id" . var_export($e, true));
     flash("Error firing driver", "danger");
 }
-die(header("Location: " . get_url("admin/list_races.php")));
+die(header("Location: " . get_url("admin/list_drivers.php")));
 ?>

@@ -46,7 +46,7 @@ try {
     flash("An error occurred", "danger");
 }
 
-$races = [];
+$drivers = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
@@ -56,7 +56,7 @@ if ($id > -1) {
         $stmt->execute([":id" => $id]);
         $r = $stmt->fetch();
         if ($r) {
-            $races = $r;
+            $drivers = $r;
         }
     } catch (PDOException $e) {
         error_log("Error fetching record: " . var_export($e, true));
@@ -72,6 +72,7 @@ if ($drivers) {
         ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]],
         ["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "rules" => ["required" => "required"]],
+        ["type" => "number", "name" => "number", "placeholder" => "Number", "label" => "Number", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality", "rules" => ["required" => "required"]],
     ];
     $keys = array_keys($drivers);

@@ -56,8 +56,8 @@ session_start();
                     Driver Management
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a></li>
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stocks</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/create_driver.php'); ?>">Add Driver</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/list_driver.php'); ?>">List Drivers</a></li>
                 </ul>
             </li>
         <?php endif; ?>
