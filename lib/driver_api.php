@@ -1,6 +1,6 @@
 <?php
-function fetch_driver() {
-    $data = []; // Prepare the data (if needed, populate this array)
+function fetch_driver($search_params) {
+    $data = [$search_params]; // Prepare the data (if needed, populate this array)
     $endpoint = "https://hyprace-api.p.rapidapi.com/v1/drivers";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";

@@ -9,38 +9,35 @@ if (!has_role("Admin")) {
 ?>
 
 <?php
-//ds2296, 12/11/24
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
-    $driver = [];
+    $allowed_keys = ["firstName", "lastName", "birthday", "code", "number", "nationality"];
+    $cleaned_post = array_intersect_key($_POST, array_flip($allowed_keys));
+
     if ($action === "fetch") {
-        $driver = fetch_driver();
-    } else if ($action === "create") {
-        foreach ($_POST as $k => $v) {
-            if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
-                unset($_POST[$k]);
-            }
-            $driver = $_POST;
-            error_log("Cleaned up POST: " . var_export($driver, true));
+        $search_params = $cleaned_post;
+        $driver = fetch_driver($search_params);
+    } elseif ($action === "create") {
+        $driver = $cleaned_post;
+    }
+
+    if (!empty($driver)) {
+        $drivers = [];
+        foreach ($driver as $data) {
+            $r = [
+                "firstName" => $data["firstName"] ?? null,
+                "lastName" => $data["lastName"] ?? null,
+                "birthday" => isset($data["birthDate"]) ? substr($data["birthDate"], 0, 10) : null,
+                "code" => $data["code"] ?? null,
+                "number" => $data["number"] ?? null,
+                "nationality" => $data["nationality"] ?? null,
+                "api_id" => $data["id"] ?? null,
+            ];
+            array_push($drivers, $r);
         }
+        insert("Drivers", $drivers, ["update_duplicate" => true]);
     }
-    //map & insert drivers
-    $drivers = [];
-    foreach($driver as $data) {
-        $r = [];
-        $r["firstName"] = $data["firstName"];
-        $r["lastName"] = $data["lastName"];
-        $r["birthday"] = $data["birthDate"];
-        $r["code"] = $data["code"];
-        $r["number"] = $data["number"];
-        $r["nationality"] = $data["nationality"];
-        array_push($drivers, $r);
-    }
-
-    insert("Drivers", $drivers, ["update_duplicate" => true]);
 }
-
-//ds2296, 12/11/2024
 ?>
 <div class="container-fluid">
     <h3>Create or Fetch Driver</h3>
@@ -54,6 +51,12 @@ if (isset($_POST["action"])) {
     </ul>
     <div id="fetch" class="tab-target">
         <form method="POST">
+            <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e.'ALO','HAM','VET'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
+            <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Number", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British', 'German'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "fetch"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit",]); ?>
         </form>
@@ -63,9 +66,9 @@ if (isset($_POST["action"])) {
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
-            <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Number", "label" => "Number", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e.'ALO','HAM','VET'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
+            <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Number", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British', 'German'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>

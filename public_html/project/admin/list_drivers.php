@@ -12,16 +12,14 @@ $form = [
     ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "include_margin" => false],
     ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "include_margin" => false],
     ["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "include_margin" => false],
-    ["type" => "text", "name" => "code", "placeholder" => "3-letter code", "label" => "3-letter code", "include_margin" => false],
-    ["type" => "number", "name" => "number", "placeholder" => "Number", "label" => "Number", "include_margin" => false],
-    ["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality", "include_margin" => false],
+    ["type" => "text", "name" => "code", "placeholder" => "i.e. 'ALO','HAM','VET'", "label" => "3-letter code", "include_margin" => false],
+    ["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Number", "include_margin" => false],
+    ["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British', 'German'", "label" => "Nationality", "include_margin" => false],
     ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["lastName" => "Surname", "birthday" => "Birthday", "number" => "Number","nationality" => "Nationality"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
 ];
 error_log("Form data: " . var_export($form, true));
-
-
 
 $query = "SELECT firstName, lastName, birthday, code, number, nationality, is_api FROM `Drivers` WHERE 1=1";
 $params = [];
@@ -62,19 +60,19 @@ if (count($_GET) > 0) {
         $params[":lastName"] = "%$lastName%";
     }
     
-    $birthday = se($_GET, "birthday", "", false);
-    if (!empty($birthday) && $birthday != "") {
+    $birthday = se($_GET, "birthday", null, false);
+    if (!empty($birthday) && $birthday != null) {
         $query .= " AND birthday = :birthday";
         $params[":birthday"] = $birthday;
     }
 
-    $code = se($_GET, "code", 0, false);
+    $code = se($_GET, "code", "", false);
     if (!empty($code) && $code != "") {
         $query .= " AND code like :code";
-        $params[":code"] = $code;
+        $params[":code"] = "%$code%";
     }
 
-    $number = se($_GET, "number", "", false);
+    $number = se($_GET, "number", 0, false);
     if (!empty($number) && ($number > 0 && $number < 100)) {
         $query .= " AND number = :number";
         $params[":number"] = $number;
@@ -110,7 +108,7 @@ if (count($_GET) > 0) {
     $query .= " LIMIT $limit";
 }
 
-$query = "SELECT id, firstName, lastName, birthday, code, price, per_change, latest, volume, api_id FROM `Drivers` ORDER BY created DESC LIMIT 25";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, api_id FROM `Drivers` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -121,7 +119,7 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching stocks " . var_export($e, true));
+    error_log("Error fetching driver " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 
