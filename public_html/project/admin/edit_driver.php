@@ -1,5 +1,4 @@
 <?php
-//note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
@@ -15,20 +14,47 @@ foreach ($_POST as $k => $v) {
     if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
         unset($_POST[$k]);
     }
-    $race = $_POST;
+    $driver = $_POST;
     error_log("Cleaned up POST: " . var_export($driver, true));
 }
-//insert data
+
+// ds2296, 12/11/2024
+if (empty($driver['firstName']) || empty($driver['lastName']) || empty($driver['birthday']) || empty($driver['code']) || empty($driver['number']) || empty($driver['nationality'])) {
+    flash("All fields are required.", "warning");
+    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+}
+
+// Formatting Checks
+if (!preg_match("/^[a-zA-Z\s]*$/", $driver['firstName']) || !preg_match("/^[a-zA-Z\s]*$/", $driver['lastName'])) {
+    flash("First Name and Surname must contain only letters and spaces.", "warning");
+    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+}
+
+if (!preg_match("/^[A-Z]{3}$/", $driver['code'])) {
+    flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).", "warning");
+    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+}
+
+$birthday = new DateTime($driver['birthday']);
+if ($birthday > new DateTime()) {
+    flash("Birthday must be in the past.", "warning");
+    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+}
+
+if (!is_numeric($driver['number']) || $driver['number'] < 1 || $driver['number'] > 99) {
+    flash("Driver Number must be between 1 and 99.", "warning");
+    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+}
+
 $db = getDB();
 $query = "UPDATE `Drivers` SET ";
 
 $params = [];
 //per record
-foreach ($race as $k => $v) {
+foreach ($driver as $k => $v) {
     if ($params) {
         $query .= ",";
     }
-    //be sure $k is trusted as this is a source of sql injection
     $query .= "$k=:$k";
     $params[":$k"] = $v;
 }
@@ -48,7 +74,6 @@ try {
 
 $drivers = [];
 if ($id > -1) {
-    //fetch
     $db = getDB();
     $query = "SELECT firstName, lastName, birthday, code, number, nationality FROM `Drivers` WHERE id = :id";
     try {
@@ -83,23 +108,84 @@ if ($drivers) {
         }
     }
 }
-//TODO handle manual create event
 ?>
 <div class="container-fluid">
     <h3>Edit Driver Details</h3>
     <div>
         <a href="<?php echo get_url("admin/list_drivers.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
-    <form method="POST">
+    <form method="POST" onsubmit="return validate(this);">
         <?php foreach ($form as $k => $v) {
             render_input($v);
         } ?>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update"]); ?>
     </form>
-
 </div>
+<script>
+    // ds2296 12/11/2024
+    function validate(form) {
+        const firstName = document.getElementsByName('firstName')[0].value.trim();
+        const lastName = document.getElementsByName('lastName')[0].value.trim();
+        const birthday = document.getElementsByName('birthday')[0].value;
+        const code = document.getElementsByName('code')[0].value.trim();
+        const number = document.getElementsByName('number')[0].value;
+        const nationality = document.getElementsByName('nationality')[0].value.trim();
+        const limit = document.getElementsByName('limit')[0].value;
 
+        // Validate First Name and Last Name (letters only, optional)
+        const nameRegex = /^[a-zA-Z\s]*$/;
+        if (firstName && !nameRegex.test(firstName)) {
+            flash("First Name must contain only letters and spaces.","warning");
+            return false;
+        }
+        if (lastName && !nameRegex.test(lastName)) {
+            flash("Surname must contain only letters and spaces." ,"warning");
+            return false;
+        }
+
+        // Validate Birthday (optional, but must be a valid date if provided)
+        if (birthday) {
+            const today = new Date();
+            const enteredDate = new Date(birthday);
+            if (enteredDate > today) {
+                flash("Birthday must be in the past.","warning");
+                return false;
+            }
+        }
+
+        // Validate Code (3 uppercase letters)
+        const codeRegex = /^[A-Z]{3}$/;
+        if (code && !codeRegex.test(code)) {
+            flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).","warning");
+            return false;
+        }
+
+        // Validate Driver Number (1-99)
+        if (number) {
+            const numValue = parseInt(number, 10);
+            if (numValue < 1 || numValue > 99) {
+                flash("Driver Number must be between 1 and 99.","warning");
+                return false;
+            }
+        }
+
+        // Validate Nationality (letters only, optional)
+        if (nationality && !nameRegex.test(nationality)) {
+            flash("Nationality must contain only letters and spaces.","warning");
+            return false;
+        }
+
+        // Validate Records Per Page (limit)
+        const limitValue = parseInt(limit, 10);
+        if (limitValue < 10 || limitValue > 100) {
+            flash("Records per page must be between 10 and 100.","warning");
+            return false;
+        }
+
+        // All validations passed
+        return true;
+    }
+</script>
 <?php
-//note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>

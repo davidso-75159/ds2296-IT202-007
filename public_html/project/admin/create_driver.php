@@ -1,5 +1,4 @@
 <?php
-//note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
@@ -50,7 +49,7 @@ if (isset($_POST["action"])) {
         </li>
     </ul>
     <div id="fetch" class="tab-target">
-        <form method="POST">
+        <form method="POST" onsubmit="return validate(this);">
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
@@ -62,7 +61,7 @@ if (isset($_POST["action"])) {
         </form>
     </div>
     <div id="create" style="display: none;" class="tab-target">
-        <form method="POST">
+        <form method="POST" onsubmit="return validate(this);">
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
@@ -84,9 +83,70 @@ if (isset($_POST["action"])) {
             }
         }
     }
-</script>
+    // ds2296 12/11/2024
+    function validate(form) {
+        const firstName = document.getElementsByName('firstName')[0].value.trim();
+        const lastName = document.getElementsByName('lastName')[0].value.trim();
+        const birthday = document.getElementsByName('birthday')[0].value;
+        const code = document.getElementsByName('code')[0].value.trim();
+        const number = document.getElementsByName('number')[0].value;
+        const nationality = document.getElementsByName('nationality')[0].value.trim();
+        const limit = document.getElementsByName('limit')[0].value;
 
+        // Validate First Name and Last Name (letters only, optional)
+        const nameRegex = /^[a-zA-Z\s]*$/;
+        if (firstName && !nameRegex.test(firstName)) {
+            flash("First Name must contain only letters and spaces.","warning");
+            return false;
+        }
+        if (lastName && !nameRegex.test(lastName)) {
+            flash("Surname must contain only letters and spaces." ,"warning");
+            return false;
+        }
+
+        // Validate Birthday (optional, but must be a valid date if provided)
+        if (birthday) {
+            const today = new Date();
+            const enteredDate = new Date(birthday);
+            if (enteredDate > today) {
+                flash("Birthday must be in the past.","warning");
+                return false;
+            }
+        }
+
+        // Validate Code (3 uppercase letters)
+        const codeRegex = /^[A-Z]{3}$/;
+        if (code && !codeRegex.test(code)) {
+            flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).","warning");
+            return false;
+        }
+
+        // Validate Driver Number (1-99)
+        if (number) {
+            const numValue = parseInt(number, 10);
+            if (numValue < 1 || numValue > 99) {
+                flash("Driver Number must be between 1 and 99.","warning");
+                return false;
+            }
+        }
+
+        // Validate Nationality (letters only, optional)
+        if (nationality && !nameRegex.test(nationality)) {
+            flash("Nationality must contain only letters and spaces.","warning");
+            return false;
+        }
+
+        // Validate Records Per Page (limit)
+        const limitValue = parseInt(limit, 10);
+        if (limitValue < 10 || limitValue > 100) {
+            flash("Records per page must be between 10 and 100.","warning");
+            return false;
+        }
+
+        // All validations passed
+        return true;
+    }
+</script>
 <?php
-//note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>

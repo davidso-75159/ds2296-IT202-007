@@ -1,8 +1,8 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php");
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+require(__DIR__ . "/../../partials/nav.php");
+if (!is_logged_in()) {
+    flash("You must be logged in to view this page", "warning");
+    die(header("Location: $BASE_PATH" . "/login.php"));
 }
 // Pagination Variables
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
@@ -63,14 +63,14 @@ try {
 ?>
 <div class="container-fluid">
     <h3>List Drivers</h3>
-    <form method="GET" id="driverForm" onsubmit="return validateForm();">
+    <form method="GET" onsubmit="return validate(this);">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php
             $form = [
                 ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name"],
                 ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname"],
                 ["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday"],
-                ["type" => "text", "name" => "code", "placeholder" => "Code (e.g., ALO)", "label" => "Code"],
+                ["type" => "text", "name" => "code", "placeholder" => "Code (e.g., HAM)", "label" => "Code"],
                 ["type" => "number", "name" => "number", "placeholder" => "Driver Number", "label" => "Number"],
                 ["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality"],
                 ["type" => "select", "name" => "sort", "label" => "Sort By", "options" => ["lastName" => "Surname", "birthday" => "Birthday", "number" => "Number", "nationality" => "Nationality"]],
@@ -99,9 +99,9 @@ try {
         </ul>
     </nav>
 </div>
-<!-- JS Validation -->
+<!--ds2296, 12/11/2024-->
 <script>
-    function validateForm() {
+    function validate(form) {
         const firstName = document.getElementsByName('firstName')[0].value.trim();
         const lastName = document.getElementsByName('lastName')[0].value.trim();
         const birthday = document.getElementsByName('birthday')[0].value;
@@ -110,7 +110,6 @@ try {
         const nationality = document.getElementsByName('nationality')[0].value.trim();
         const limit = document.getElementsByName('limit')[0].value;
 
-        // Validate First Name and Last Name (letters only, optional)
         const nameRegex = /^[a-zA-Z\s]*$/;
         if (firstName && !nameRegex.test(firstName)) {
             flash("First Name must contain only letters and spaces.","warning");
@@ -121,24 +120,21 @@ try {
             return false;
         }
 
-        // Validate Birthday (optional, but must be a valid date if provided)
         if (birthday) {
             const today = new Date();
             const enteredDate = new Date(birthday);
             if (enteredDate > today) {
-                flash("Birthday cannot be in the future.","warning");
+                flash("Birthday must be in the past.","warning");
                 return false;
             }
         }
 
-        // Validate Code (3 uppercase letters)
         const codeRegex = /^[A-Z]{3}$/;
         if (code && !codeRegex.test(code)) {
-            flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).","warning");
+            flash("Code must consist of exactly 3 uppercase letters (e.g., HAM).","warning");
             return false;
         }
 
-        // Validate Driver Number (1-99)
         if (number) {
             const numValue = parseInt(number, 10);
             if (numValue < 1 || numValue > 99) {
@@ -147,21 +143,18 @@ try {
             }
         }
 
-        // Validate Nationality (letters only, optional)
         if (nationality && !nameRegex.test(nationality)) {
             flash("Nationality must contain only letters and spaces.","warning");
             return false;
         }
 
-        // Validate Records Per Page (limit)
         const limitValue = parseInt(limit, 10);
         if (limitValue < 10 || limitValue > 100) {
             flash("Records per page must be between 10 and 100.","warning");
             return false;
         }
 
-        // All validations passed
         return true;
     }
 </script>
-<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
+<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
