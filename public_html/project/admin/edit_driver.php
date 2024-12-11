@@ -130,7 +130,6 @@ if ($drivers) {
         const code = document.getElementsByName('code')[0].value.trim();
         const number = document.getElementsByName('number')[0].value;
         const nationality = document.getElementsByName('nationality')[0].value.trim();
-        const limit = document.getElementsByName('limit')[0].value;
 
         // Validate First Name and Last Name (letters only, optional)
         const nameRegex = /^[a-zA-Z\s]*$/;
@@ -172,13 +171,6 @@ if ($drivers) {
         // Validate Nationality (letters only, optional)
         if (nationality && !nameRegex.test(nationality)) {
             flash("Nationality must contain only letters and spaces.","warning");
-            return false;
-        }
-
-        // Validate Records Per Page (limit)
-        const limitValue = parseInt(limit, 10);
-        if (limitValue < 10 || limitValue > 100) {
-            flash("Records per page must be between 10 and 100.","warning");
             return false;
         }
 

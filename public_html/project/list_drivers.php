@@ -4,14 +4,14 @@ if (!is_logged_in()) {
     flash("You must be logged in to view this page", "warning");
     die(header("Location: $BASE_PATH" . "/login.php"));
 }
-// Pagination Variables
+// ds2296, 12/11/2024
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 $limit = isset($_GET['limit']) ? max(min((int)$_GET['limit'], 100), 10) : 10;
 $offset = ($page - 1) * $limit;
 // Default Query
 $query = "SELECT firstName, lastName, birthday, code, number, nationality, is_api FROM `Drivers` WHERE 1=1";
 $params = [];
-// Handle Filtering
+// filter vars
 $filters = [
     'firstName' => se($_GET, "firstName", "", false),
     'lastName' => se($_GET, "lastName", "", false),
@@ -22,9 +22,8 @@ $filters = [
 ];
 foreach ($filters as $key => $value) {
     if (!empty($value)) {
-        if ($key === 'number' && ($value < 1 || $value > 99)) continue;
         $query .= " AND $key LIKE :$key";
-        $params[":$key"] = ($key === 'number') ? $value : "%$value%";
+        $params[":$key"] = "%$value%";
     }
 }
 // Sorting
@@ -63,16 +62,16 @@ try {
 ?>
 <div class="container-fluid">
     <h3>List Drivers</h3>
-    <form method="GET" onsubmit="return validate(this);">
+    <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php
             $form = [
                 ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name"],
                 ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname"],
-                ["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday"],
-                ["type" => "text", "name" => "code", "placeholder" => "Code (e.g., HAM)", "label" => "Code"],
-                ["type" => "number", "name" => "number", "placeholder" => "Driver Number", "label" => "Number"],
-                ["type" => "text", "name" => "nationality", "placeholder" => "Nationality", "label" => "Nationality"],
+                ["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday"],
+                ["type" => "text", "name" => "code", "placeholder" => "i.e., HAM", "label" => "3-letter code"],
+                ["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Driver Number"],
+                ["type" => "text", "name" => "nationality", "placeholder" => "i.e., British", "label" => "Nationality"],
                 ["type" => "select", "name" => "sort", "label" => "Sort By", "options" => ["lastName" => "Surname", "birthday" => "Birthday", "number" => "Number", "nationality" => "Nationality"]],
                 ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "Ascending", "desc" => "Descending"]],
                 ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => $limit],
@@ -99,62 +98,4 @@ try {
         </ul>
     </nav>
 </div>
-<!--ds2296, 12/11/2024-->
-<script>
-    function validate(form) {
-        const firstName = document.getElementsByName('firstName')[0].value.trim();
-        const lastName = document.getElementsByName('lastName')[0].value.trim();
-        const birthday = document.getElementsByName('birthday')[0].value;
-        const code = document.getElementsByName('code')[0].value.trim();
-        const number = document.getElementsByName('number')[0].value;
-        const nationality = document.getElementsByName('nationality')[0].value.trim();
-        const limit = document.getElementsByName('limit')[0].value;
-
-        const nameRegex = /^[a-zA-Z\s]*$/;
-        if (firstName && !nameRegex.test(firstName)) {
-            flash("First Name must contain only letters and spaces.","warning");
-            return false;
-        }
-        if (lastName && !nameRegex.test(lastName)) {
-            flash("Last Name must contain only letters and spaces." ,"warning");
-            return false;
-        }
-
-        if (birthday) {
-            const today = new Date();
-            const enteredDate = new Date(birthday);
-            if (enteredDate > today) {
-                flash("Birthday must be in the past.","warning");
-                return false;
-            }
-        }
-
-        const codeRegex = /^[A-Z]{3}$/;
-        if (code && !codeRegex.test(code)) {
-            flash("Code must consist of exactly 3 uppercase letters (e.g., HAM).","warning");
-            return false;
-        }
-
-        if (number) {
-            const numValue = parseInt(number, 10);
-            if (numValue < 1 || numValue > 99) {
-                flash("Driver Number must be between 1 and 99.","warning");
-                return false;
-            }
-        }
-
-        if (nationality && !nameRegex.test(nationality)) {
-            flash("Nationality must contain only letters and spaces.","warning");
-            return false;
-        }
-
-        const limitValue = parseInt(limit, 10);
-        if (limitValue < 10 || limitValue > 100) {
-            flash("Records per page must be between 10 and 100.","warning");
-            return false;
-        }
-
-        return true;
-    }
-</script>
 <?php require_once(__DIR__ . "/../../partials/flash.php"); ?>

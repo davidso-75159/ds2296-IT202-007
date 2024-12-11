@@ -20,17 +20,40 @@ if (isset($_POST["action"])) {
         $driver = $cleaned_post;
     }
 
+    // ds2296, 12/11/2024
+    if (empty($driver['firstName']) || empty($driver['lastName']) || empty($driver['birthday']) || empty($driver['code']) || empty($driver['number']) || empty($driver['nationality'])) {
+        flash("All fields are required.", "warning");
+    }
+
+    // Formatting Checks
+    if (!preg_match("/^[a-zA-Z\s]*$/", $driver['firstName']) || !preg_match("/^[a-zA-Z\s]*$/", $driver['lastName'])) {
+        flash("First Name and Surname must contain only letters and spaces.", "warning");
+    }
+
+    if (!preg_match("/^[A-Z]{3}$/", $driver['code'])) {
+        flash("Code must consist of exactly 3 uppercase letters (i.e. 'HAM').", "warning");
+    }
+
+    $birthday = new DateTime($driver['birthday']);
+    if ($birthday > new DateTime()) {
+        flash("Birthday must be in the past.", "warning");
+    }
+
+    if (!is_numeric($driver['number']) || $driver['number'] < 1 || $driver['number'] > 99) {
+        flash("Driver Number must be between 1 and 99.", "warning");
+    }
+
     if (!empty($driver)) {
         $drivers = [];
         foreach ($driver as $data) {
             $r = [
-                "firstName" => $data["firstName"] ?? null,
-                "lastName" => $data["lastName"] ?? null,
-                "birthday" => isset($data["birthDate"]) ? substr($data["birthDate"], 0, 10) : null,
-                "code" => $data["code"] ?? null,
+                "firstName" => $data["firstName"],
+                "lastName" => $data["lastName"],
+                "birthday" => substr($data["birthDate"], 0, 10),
+                "code" => $data["code"],
                 "number" => $data["number"] ?? null,
-                "nationality" => $data["nationality"] ?? null,
-                "api_id" => $data["id"] ?? null,
+                "nationality" => $data["nationality"],
+                "api_id" => $data["id"],
             ];
             array_push($drivers, $r);
         }
@@ -52,10 +75,10 @@ if (isset($_POST["action"])) {
         <form method="POST" onsubmit="return validate(this);">
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e.'ALO','HAM','VET'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
+            <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e. 'HAM'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
             <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Number", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British', 'German'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "fetch"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit",]); ?>
         </form>
@@ -64,10 +87,10 @@ if (isset($_POST["action"])) {
         <form method="POST" onsubmit="return validate(this);">
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "Birthday", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e.'ALO','HAM','VET'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
+            <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "code", "placeholder" => "i.e. 'HAM'", "label" => "3-letter code", "rules" => ["required" => "required"]]); ?> 
             <?php render_input(["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Number", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British', 'German'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "nationality", "placeholder" => "i.e. 'British'", "label" => "Nationality", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
@@ -91,9 +114,7 @@ if (isset($_POST["action"])) {
         const code = document.getElementsByName('code')[0].value.trim();
         const number = document.getElementsByName('number')[0].value;
         const nationality = document.getElementsByName('nationality')[0].value.trim();
-        const limit = document.getElementsByName('limit')[0].value;
 
-        // Validate First Name and Last Name (letters only, optional)
         const nameRegex = /^[a-zA-Z\s]*$/;
         if (firstName && !nameRegex.test(firstName)) {
             flash("First Name must contain only letters and spaces.","warning");
@@ -104,7 +125,6 @@ if (isset($_POST["action"])) {
             return false;
         }
 
-        // Validate Birthday (optional, but must be a valid date if provided)
         if (birthday) {
             const today = new Date();
             const enteredDate = new Date(birthday);
@@ -114,14 +134,12 @@ if (isset($_POST["action"])) {
             }
         }
 
-        // Validate Code (3 uppercase letters)
         const codeRegex = /^[A-Z]{3}$/;
         if (code && !codeRegex.test(code)) {
-            flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).","warning");
+            flash("Code must consist of exactly 3 uppercase letters (i.e., HAM).","warning");
             return false;
         }
 
-        // Validate Driver Number (1-99)
         if (number) {
             const numValue = parseInt(number, 10);
             if (numValue < 1 || numValue > 99) {
@@ -130,20 +148,11 @@ if (isset($_POST["action"])) {
             }
         }
 
-        // Validate Nationality (letters only, optional)
         if (nationality && !nameRegex.test(nationality)) {
             flash("Nationality must contain only letters and spaces.","warning");
             return false;
         }
 
-        // Validate Records Per Page (limit)
-        const limitValue = parseInt(limit, 10);
-        if (limitValue < 10 || limitValue > 100) {
-            flash("Records per page must be between 10 and 100.","warning");
-            return false;
-        }
-
-        // All validations passed
         return true;
     }
 </script>
