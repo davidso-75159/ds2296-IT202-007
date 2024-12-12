@@ -1,0 +1,59 @@
+[
+  "items": [
+    [
+      "id": "475001fd-71ed-4f7e-2077-08d9161fe7c5",
+      "firstName": "Charles",
+      "lastName": "Leclerc",
+      "birthDate": "1997-10-16T00:00:00Z",
+      "code": "LEC",
+      "number": 16,
+      "nationality": "Monegasque",
+      "country": [
+        "id": "6b37fe3e-ebfd-428b-baae-09c903db3a5a",
+        "name": "Monaco",
+        "alphaTwoCode": "MC",
+        "alphaThreeCode": "MCO",
+        "numCode": 492
+      ]
+    ],
+    [
+      "id": "6b0537a9-c218-4077-21d1-08d9161fe7c5",
+      "firstName": "Max",
+      "lastName": "Verstappen",
+      "birthDate": "1997-09-30T00:00:00Z",
+      "code": "VER",
+      "number": 33,
+      "nationality": "Dutch",
+      "country": [
+        "id": "4a0a39f5-120a-48ad-81af-b39882aec699",
+        "name": "Netherlands",
+        "alphaTwoCode": "NL",
+        "alphaThreeCode": "NLD",
+        "numCode": 528
+      ]
+    ],
+    [
+      "id": "d5a0947b-fb07-472f-200c-08d9161fe7c5",
+      "firstName": "Lewis",
+      "lastName": "Hamilton",
+      "birthDate": "1985-01-07T00:00:00Z",
+      "code": "HAM",
+      "number": 44,
+      "nationality": "British",
+      "country": [
+        "id": "19694fc2-7dba-4299-ad76-68c32594d591",
+        "name": "United Kingdom of Great Britain and Northern Ireland",
+        "alphaTwoCode": "GB",
+        "alphaThreeCode": "GBR",
+        "numCode": 826
+      ]
+    ]
+  ],
+  "currentPage": 1,
+  "totalPages": 1,
+  "pageSize": 10,
+  "totalCount": 1,
+  "itemsNumber": 1,
+  "hasPrevious": false,
+  "hasNext": false
+]
