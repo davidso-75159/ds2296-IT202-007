@@ -7,14 +7,14 @@ if (!is_logged_in()) {
 }
 
 $form = [
-    ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name"],
-    ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname"],
-    ["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday"],
-    ["type" => "text", "name" => "code", "placeholder" => "i.e., HAM", "label" => "3-letter code"],
-    ["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Driver Number"],
-    ["type" => "text", "name" => "nationality", "placeholder" => "i.e., British", "label" => "Nationality"],
-    ["type" => "select", "name" => "sort", "label" => "Sort By", "options" => ["lastName" => "Surname", "birthday" => "Birthday", "number" => "Number", "nationality" => "Nationality"]],
-    ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "Ascending", "desc" => "Descending"]],
+    ["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "include_margin" => false],
+    ["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "include_margin" => false],
+    ["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday", "include_margin" => false],
+    ["type" => "text", "name" => "code", "placeholder" => "i.e., HAM", "label" => "3-letter code", "include_margin" => false],
+    ["type" => "number", "name" => "number", "placeholder" => "Must be between 1-99", "label" => "Driver Number", "include_margin" => false],
+    ["type" => "text", "name" => "nationality", "placeholder" => "i.e., British", "label" => "Nationality", "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort By", "options" => [["lastName" => "Surname"], ["birthday" => "Birthday"], ["number" => "Number"], ["nationality" => "Nationality"]], "include_margin" => false],
+    ["type" => "select", "name" => "order", "label" => "Order", "options" => [["asc" => "Ascending"], ["desc" => "Descending"]], "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
@@ -120,6 +120,7 @@ try {
 
 $table = [
     "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
+    "edit_url" => get_url("admin/edit_driver.php"),"delete_url" => get_url("admin/delete_driver.php")
 ];
 
 ?>
