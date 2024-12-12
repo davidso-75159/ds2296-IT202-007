@@ -3,7 +3,7 @@ require(__DIR__ . "/../../partials/nav.php");
 
 $result = [];
 if (true) { // Ensure this block runs
-    $data = []; // Prepare the data (if needed, populate this array)
+    $data = ["pageSize" => 25, "number" => 33]; // Prepare the data (if needed, populate this array)
     $endpoint = "https://hyprace-api.p.rapidapi.com/v1/drivers";
     $isRapidAPI = true;
     $rapidAPIHost = "hyprace-api.p.rapidapi.com";
@@ -34,7 +34,7 @@ if (true) { // Ensure this block runs
 }
 ?>
 <div class="container-fluid">
-    <h1>Grand Prix Info</h1>
+    <h1>Driver Info</h1>
     <p> Remember, we typically won't be frequently calling live data from our API, this is merely a quick sample. We'll want to cache data in our DB to save on API quota. </p>
     <div class="row">
         <?php

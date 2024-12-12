@@ -43,7 +43,7 @@
 
     ?>
     <?php if ($_title) : ?>
-        <h3><?php se($title); ?></h3>
+        <h3><?php se($_title); ?></h3>
     <?php endif; ?>
     <table class="table <?php se($_extra_classes); ?>">
         <?php if ($_header_override) : ?>

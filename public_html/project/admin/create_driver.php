@@ -5,51 +5,53 @@ if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
-?>
-
-<?php
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
-    $number =  (int)se($_POST, "number", 0, false);
-    $driver = [];
+    $number = (int)se($_POST, "number", 0, false);
+    $drivers = []; // Array to store matching drivers
+
     if ($action === "fetch") {
-        $result = fetch_driver($number);
-        error_log("Data from API" . var_export($result, true));
-        if ($result) {
-            $driver = array_map(function ($item) {
-                return $item;
-            }, $result);
+        // Fetch drivers from the API with the specific number
+        $api_result = fetch_driver($number); // Assume this fetches all drivers from the API
+        error_log("Data from API: " . var_export($api_result, true));
+
+        if ($api_result && isset($api_result['items']) && count($api_result['items']) > 0) {
+            foreach ($api_result['items'] as $item) {
+                if ($item['number'] == $number) { // Filter drivers with the desired number
+                    $drivers[] = [
+                        "firstName" => $item["firstName"] ?? "",
+                        "lastName" => $item["lastName"] ?? "",
+                        "birthday" => isset($item["birthDate"]) ? substr($item["birthDate"], 0, 10) : "",
+                        "code" => $item["code"] ?? "",
+                        "number" => $item["number"] ?? 0,
+                        "nationality" => $item["nationality"] ?? "",
+                    ];
+                }
+            }
+        } else {
+            flash("No drivers found with number $number", "warning");
         }
     } elseif ($action === "create") {
-        foreach ($_POST as $k => $v) {
-            if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
-                unset($_POST[$k]);
+        // Insert manually provided driver data
+        foreach ($_POST['drivers'] as $driver_data) {
+            if ($driver_data['number'] == $number) { // Validate the number matches the filter
+                $drivers[] = array_filter($driver_data, function ($key) {
+                    return in_array($key, ["firstName", "lastName", "birthday", "code", "number", "nationality"]);
+                }, ARRAY_FILTER_USE_KEY);
             }
-            $driver = $_POST;
-            error_log("Cleaned up POST: " . var_export($driver, true));
         }
     }
 
-    $db = getDB();
-    $query = "INSERT INTO `Drivers` ";
-    $columns = [];
-    $params = [];
-    //per record
-    foreach ($driver as $k => $v) {
-        array_push($columns, "`$k`");
-        $params[":$k"] = $v;
-    }
-    $query .= "(" . join(",", $columns) . ")";
-    $query .= "VALUES (" . join(",", array_keys($params)) . ")";
-    error_log("Query: " . $query);
-    error_log("Params: " . var_export($params, true));
-    try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Inserted driver " . $db->lastInsertId(), "success");
-    } catch (PDOException $e) {
-            error_log("Something broke with the query" . var_export($e, true));
-            flash("An error occurred", "danger");
+    if (!empty($drivers)) {
+        foreach ($drivers as $driver) {
+            $success = insert("Drivers", $driver, ["update_duplicate" => true]); // Insert or update each driver
+            if (!$success) {
+                flash("Failed to save data for driver: " . json_encode($driver), "danger");
+            }
+        }
+        flash("Drivers with number $number have been saved successfully", "success");
+    } else {
+        flash("No drivers to save", "warning");
     }
 }
 ?>
@@ -71,7 +73,7 @@ if (isset($_POST["action"])) {
         </form>
     </div>
     <div id="create" style="display: none;" class="tab-target">
-        <form method="POST">
+        <form method="POST" onsubmit="return validate(this)">
             <?php render_input(["type" => "text", "name" => "firstName", "placeholder" => "First Name", "label" => "First Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "lastName", "placeholder" => "Surname", "label" => "Surname", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "birthday", "placeholder" => "YYYY-MM-DD", "label" => "Birthday", "rules" => ["required" => "required"]]); ?>

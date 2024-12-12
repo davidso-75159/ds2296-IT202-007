@@ -37,6 +37,7 @@ session_start();
         <?php if (!is_logged_in()) : ?>
             <li><a href="<?php echo get_url('login.php'); ?>">Login</a></li>
             <li><a href="<?php echo get_url('register.php'); ?>">Register</a></li>
+            <li><a href="<?php echo get_url('admin/list_drivers.php'); ?>">List Drivers</a></li>
         <?php endif; ?>
         <?php if (has_role("Admin")) : ?>
             <li class="nav-item dropdown">
@@ -57,7 +58,8 @@ session_start();
                 </a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?php echo get_url('admin/create_driver.php'); ?>">Add Driver</a></li>
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/list_driver.php'); ?>">List Drivers</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/edit_driver.php'); ?>">Edit Driver</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/delete_driver.php'); ?>">Delete Driver</a></li>
                 </ul>
             </li>
         <?php endif; ?>
