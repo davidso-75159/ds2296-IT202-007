@@ -3,56 +3,42 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: $BASE_PATH" . "/list_drivers.php"));
 }
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $number = (int)se($_POST, "number", 0, false);
     $drivers = []; // Array to store matching drivers
-
-    if ($action === "fetch") {
-        // Fetch drivers from the API with the specific number
-        $api_result = fetch_driver($number); // Assume this fetches all drivers from the API
-        error_log("Data from API: " . var_export($api_result, true));
-
-        if ($api_result && isset($api_result['items']) && count($api_result['items']) > 0) {
-            foreach ($api_result['items'] as $item) {
-                if ($item['number'] == $number) { // Filter drivers with the desired number
+    if ($number) {
+        if ($action === "fetch") {
+            $result = fetch_driver($number);
+            error_log("Data from API: " . var_export($result, true));
+            if ($result) {
+                foreach ($result['items'] as $item) {
                     $drivers[] = [
-                        "firstName" => $item["firstName"] ?? "",
-                        "lastName" => $item["lastName"] ?? "",
-                        "birthday" => isset($item["birthDate"]) ? substr($item["birthDate"], 0, 10) : "",
-                        "code" => $item["code"] ?? "",
-                        "number" => $item["number"] ?? 0,
-                        "nationality" => $item["nationality"] ?? "",
+                        "firstName" => $item["firstName"],
+                        "lastName" => $item["lastName"],
+                        "birthday" => substr($item["birthDate"], 0, 10),
+                        "code" => $item["code"],
+                        "number" => $item["number"] ?? null,
+                        "nationality" => $item["nationality"],
                     ];
                 }
+            } else {
+                flash("No driver found with number $number", "warning");
             }
-        } else {
-            flash("No drivers found with number $number", "warning");
-        }
-    } elseif ($action === "create") {
-        // Insert manually provided driver data
-        foreach ($_POST['drivers'] as $driver_data) {
-            if ($driver_data['number'] == $number) { // Validate the number matches the filter
-                $drivers[] = array_filter($driver_data, function ($key) {
-                    return in_array($key, ["firstName", "lastName", "birthday", "code", "number", "nationality"]);
-                }, ARRAY_FILTER_USE_KEY);
+        } elseif ($action === "create") {
+            foreach ($_POST as $k => $v) {
+                if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
+                    unset($_POST[$k]);
+                }
+                $drivers= $_POST;
+                error_log("Cleaned up POST: " . var_export($drivers, true));
             }
         }
     }
 
-    if (!empty($drivers)) {
-        foreach ($drivers as $driver) {
-            $success = insert("Drivers", $driver, ["update_duplicate" => true]); // Insert or update each driver
-            if (!$success) {
-                flash("Failed to save data for driver: " . json_encode($driver), "danger");
-            }
-        }
-        flash("Drivers with number $number have been saved successfully", "success");
-    } else {
-        flash("No drivers to save", "warning");
-    }
+    insert("Drivers", $drivers, ["update_duplicate" => true]);
 }
 ?>
 <div class="container-fluid">

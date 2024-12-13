@@ -3,13 +3,12 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: $BASE_PATH" . "/list_driver.php"));
 }
 ?>
 
 <?php
 $id = se($_GET, "id", -1, false);
-// ds2296, 12/11/2024
 foreach ($_POST as $k => $v) {
     if (!in_array($k, ["firstName", "lastName", "birthday", "code", "number", "nationality"])) {
         unset($_POST[$k]);
@@ -18,39 +17,37 @@ foreach ($_POST as $k => $v) {
     error_log("Cleaned up POST: " . var_export($driver, true));
 }
 
-// ds2296, 12/11/2024
 if (empty($driver['firstName']) || empty($driver['lastName']) || empty($driver['birthday']) || empty($driver['code']) || empty($driver['number']) || empty($driver['nationality'])) {
     flash("All fields are required.", "warning");
-    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+    die(header("Location: edit_driver.php?id=" . $id));
 }
 
-// Formatting Checks
-if (!preg_match("/^[a-zA-Z\s]*$/", $driver['firstName']) || !preg_match("/^[a-zA-Z\s]*$/", $driver['lastName'])) {
+if (!preg_match("/^[a-zA-Z\sÀ-ÖØ-öø-ÿ]*$/", $driver['firstName']) || !preg_match("/^[a-zA-Z\sÀ-ÖØ-öø-ÿ]*$/", $driver['lastName'])) {
     flash("First Name and Surname must contain only letters and spaces.", "warning");
-    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+    die(header("Location: edit_driver.php?id=" . $id));
 }
 
 if (!preg_match("/^[A-Z]{3}$/", $driver['code'])) {
     flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).", "warning");
-    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+    die(header("Location: edit_driver.php?id=" . $id));
 }
 
 $birthday = new DateTime($driver['birthday']);
 if ($birthday > new DateTime()) {
     flash("Birthday must be in the past.", "warning");
-    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+    die(header("Location: edit_driver.php?id=" . $id));
 }
 
 if (!is_numeric($driver['number']) || $driver['number'] < 1 || $driver['number'] > 99) {
     flash("Driver Number must be between 1 and 99.", "warning");
-    die(header("Location: edit_driver.php?id=" . $id)); // Redirect back to the form with the error
+    die(header("Location: edit_driver.php?id=" . $id));
 }
 
 $db = getDB();
 $query = "UPDATE `Drivers` SET ";
 
 $params = [];
-//per record
+//per driver
 foreach ($driver as $k => $v) {
     if ($params) {
         $query .= ",";
@@ -66,7 +63,7 @@ error_log("Params: " . var_export($params, true));
 try {
     $stmt = $db->prepare($query);
     $stmt->execute($params);
-    flash("Updated record ", "success");
+    flash("Updated driver ", "success");
 } catch (PDOException $e) {
     error_log("Something broke with the query" . var_export($e, true));
     flash("An error occurred", "danger");
@@ -84,8 +81,8 @@ if ($id > -1) {
             $drivers = $r;
         }
     } catch (PDOException $e) {
-        error_log("Error fetching record: " . var_export($e, true));
-        flash("Error fetching record", "danger");
+        error_log("Error fetching driver: " . var_export($e, true));
+        flash("Error fetching driver", "danger");
     }
 } else {
     flash("Invalid id passed", "danger");
@@ -131,8 +128,7 @@ if ($drivers) {
         const number = document.getElementsByName('number')[0].value;
         const nationality = document.getElementsByName('nationality')[0].value.trim();
 
-        // Validate First Name and Last Name (letters only, optional)
-        const nameRegex = /^[a-zA-Z\s]*$/;
+        const nameRegex = /^[a-zA-Z\sÀ-ÖØ-öø-ÿ]*$/;
         if (firstName && !nameRegex.test(firstName)) {
             flash("First Name must contain only letters and spaces.","warning");
             return false;
@@ -142,7 +138,6 @@ if ($drivers) {
             return false;
         }
 
-        // Validate Birthday (optional, but must be a valid date if provided)
         if (birthday) {
             const today = new Date();
             const enteredDate = new Date(birthday);
@@ -152,14 +147,12 @@ if ($drivers) {
             }
         }
 
-        // Validate Code (3 uppercase letters)
         const codeRegex = /^[A-Z]{3}$/;
         if (code && !codeRegex.test(code)) {
             flash("Code must consist of exactly 3 uppercase letters (e.g., ALO).","warning");
             return false;
         }
 
-        // Validate Driver Number (1-99)
         if (number) {
             const numValue = parseInt(number, 10);
             if (numValue < 1 || numValue > 99) {
@@ -168,13 +161,11 @@ if ($drivers) {
             }
         }
 
-        // Validate Nationality (letters only, optional)
         if (nationality && !nameRegex.test(nationality)) {
             flash("Nationality must contain only letters and spaces.","warning");
             return false;
         }
 
-        // All validations passed
         return true;
     }
 </script>
