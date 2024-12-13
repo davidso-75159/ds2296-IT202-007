@@ -33,6 +33,7 @@ session_start();
         <?php if (is_logged_in()) : ?>
             <li><a href="<?php echo get_url('home.php'); ?>">Home</a></li>
             <li><a href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+            <li><a href="<?php echo get_url('list_drivers.php'); ?>">List Drivers</a></li>
         <?php endif; ?>
         <?php if (!is_logged_in()) : ?>
             <li><a href="<?php echo get_url('login.php'); ?>">Login</a></li>
@@ -40,9 +41,7 @@ session_start();
         <?php endif; ?>
         <?php if (has_role("Admin")) : ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Admin
-                </a>
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
                     <li><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
@@ -52,12 +51,11 @@ session_start();
         <?php endif; ?>
         <?php if (has_role("Admin")) : ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Driver Management
-                </a>
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Driver Management</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?php echo get_url('admin/create_driver.php'); ?>">Add Driver</a></li>
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/list_driver.php'); ?>">List Drivers</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/edit_driver.php'); ?>">Edit Driver</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/delete_driver.php'); ?>">Delete Driver</a></li>
                 </ul>
             </li>
         <?php endif; ?>
