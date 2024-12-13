@@ -51,11 +51,9 @@ session_start();
         <?php endif; ?>
         <?php if (has_role("Admin")) : ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Driver Management</a>
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">FIA Driver Management</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/create_driver.php'); ?>">Add Driver</a></li>
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/edit_driver.php'); ?>">Edit Driver</a></li>
-                    <li><a class="dropdown-item" href="<?php echo get_url('admin/delete_driver.php'); ?>">Delete Driver</a></li>
+                    <li><a class="dropdown-item" href="<?php echo get_url('admin/create_driver.php'); ?>">Hire a Driver</a></li>
                 </ul>
             </li>
         <?php endif; ?>
