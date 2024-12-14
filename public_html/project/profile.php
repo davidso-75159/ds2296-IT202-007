@@ -94,31 +94,19 @@ if (isset($_POST["save"])) {
 $email = get_user_email();
 $username = get_username();
 ?>
-<form method="POST" onsubmit="return validate(this);">
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?php se($email); ?>" />
-    </div>
-    <div class="mb-3">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="<?php se($username); ?>" />
-    </div>
-    <!-- DO NOT PRELOAD PASSWORD -->
-    <div>Password Reset</div>
-    <div class="mb-3">
-        <label for="cp">Current Password</label>
-        <input type="password" name="currentPassword" id="cp" />
-    </div>
-    <div class="mb-3">
-        <label for="np">New Password</label>
-        <input type="password" name="newPassword" id="np" />
-    </div>
-    <div class="mb-3">
-        <label for="conp">Confirm Password</label>
-        <input type="password" name="confirmPassword" id="conp" />
-    </div>
-    <input type="submit" value="Update Profile" name="save" />
-</form>
+<div class="container-fluid">
+    <form method="POST" onsubmit="return validate(this);">
+        <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => $email, "rules" => ["required" => true]]); ?>
+        <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => $username, "rules" => ["required" => true, "maxlength" => 30]]); ?>
+        <!-- DO NOT PRELOAD PASSWORD -->
+        <div class="lead">Password Reset</div>
+        <?php render_input(["type" => "password", "id" => "cp", "name" => "currentPassword", "label" => "Current Password", "rules" => ["minlength" => 8]]); ?>
+        <?php render_input(["type" => "password", "id" => "np", "name" => "newPassword", "label" => "New Password", "rules" => ["minlength" => 8]]); ?>
+        <?php render_input(["type" => "password", "id" => "conp", "name" => "confirmPassword", "label" => "Confirm Password", "rules" => ["minlength" => 8]]); ?>
+        <?php render_input(["type" => "hidden", "name" => "save"]);/*lazy value to check if form submitted, not ideal*/ ?>
+        <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
+    </form>
+</div>
 
 <script> // ds2296, 11/13/2024
 function validate(form) {
@@ -133,7 +121,7 @@ function validate(form) {
     if (em.length <= 0) {
         flash("Email is required", "warning");
         isValid = false;
-    } else if (!is_valid_email(em)) { // Check email format
+    } else if (!is_valid_email(em)) {
         flash("Invalid email format. Must contain '@'.", "warning");
         isValid = false;
     }
@@ -142,19 +130,18 @@ function validate(form) {
     if (un.length <= 0) {
         flash("Username is required", "warning");
         isValid = false;
-    } else if (!is_valid_username(un)) { // Validate username format
+    } else if (!is_valid_username(un)) {
         flash("Username must only contain 3-16 characters a-z, 0-9, ., _, or -", "warning");
         isValid = false;
     }
 
-    // If any password fields are filled, check password rules
     if (op.length > 0 && np.length > 0 && con.length > 0) {
-        if (!is_valid_password(np)) { // Validate new password length
+        if (!is_valid_password(np)) {
             flash("Password must be at least 8 characters", "warning");
             isValid = false;
         }
 
-        if (np !== con) { // Confirm password match
+        if (np !== con) {
             flash("Password and confirm password must match", "warning");
             isValid = false;
         }

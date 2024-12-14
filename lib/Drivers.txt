@@ -1,0 +1,180 @@
+array (
+  'items' => 
+  array (
+    0 => 
+    array (
+      'id' => 'aa7536c6-572f-4e44-1eb3-08d9161fe7c5',
+      'firstName' => 'Carlo',
+      'lastName' => 'Abate',
+      'birthDate' => '1932-07-10T00:00:00Z',
+      'deathDate' => '2019-04-29T00:00:00Z',
+      'nationality' => 'Italian',
+      'country' => 
+      array (
+        'id' => '0b832ebf-2df7-4a89-865f-33647ea76462',
+        'name' => 'Italy',
+        'alphaTwoCode' => 'IT',
+        'alphaThreeCode' => 'ITA',
+        'numCode' => 380,
+      ),
+    ),
+    1 => 
+    array (
+      'id' => '3e2fa826-7b0f-4967-1eb4-08d9161fe7c5',
+      'firstName' => 'George',
+      'lastName' => 'Abecassis',
+      'birthDate' => '1913-03-21T00:00:00Z',
+      'deathDate' => '1991-12-18T00:00:00Z',
+      'nationality' => 'British',
+      'country' => 
+      array (
+        'id' => '19694fc2-7dba-4299-ad76-68c32594d591',
+        'name' => 'United Kingdom of Great Britain and Northern Ireland',
+        'alphaTwoCode' => 'GB',
+        'alphaThreeCode' => 'GBR',
+        'numCode' => 826,
+      ),
+    ),
+    2 => 
+    array (
+      'id' => '0f4e3099-c963-4a7d-1eb5-08d9161fe7c5',
+      'firstName' => 'Kenny',
+      'lastName' => 'Acheson',
+      'birthDate' => '1957-11-27T00:00:00Z',
+      'nationality' => 'British',
+      'country' => 
+      array (
+        'id' => '19694fc2-7dba-4299-ad76-68c32594d591',
+        'name' => 'United Kingdom of Great Britain and Northern Ireland',
+        'alphaTwoCode' => 'GB',
+        'alphaThreeCode' => 'GBR',
+        'numCode' => 826,
+      ),
+    ),
+    3 => 
+    array (
+      'id' => 'bacc7562-f633-41e9-1eb6-08d9161fe7c5',
+      'firstName' => 'Philippe',
+      'lastName' => 'Adams',
+      'birthDate' => '1969-11-19T00:00:00Z',
+      'nationality' => 'Belgian',
+      'country' => 
+      array (
+        'id' => '7a57762a-8db1-4d61-8c72-f4cb2ac2cd54',
+        'name' => 'Belgium',
+        'alphaTwoCode' => 'BE',
+        'alphaThreeCode' => 'BEL',
+        'numCode' => 56,
+      ),
+    ),
+    4 => 
+    array (
+      'id' => '0ae72b64-27d3-4c73-1eb7-08d9161fe7c5',
+      'firstName' => 'Walt',
+      'lastName' => 'Ader',
+      'birthDate' => '1913-12-15T00:00:00Z',
+      'deathDate' => '1982-11-25T00:00:00Z',
+      'nationality' => 'American',
+      'country' => 
+      array (
+        'id' => '8104cc87-132b-4ecb-a05d-c55f3d3a0b28',
+        'name' => 'United States of America',
+        'alphaTwoCode' => 'US',
+        'alphaThreeCode' => 'USA',
+        'numCode' => 840,
+      ),
+    ),
+    5 => 
+    array (
+      'id' => '63376807-69b5-4163-1eb8-08d9161fe7c5',
+      'firstName' => 'Kurt',
+      'lastName' => 'Adolff',
+      'birthDate' => '1921-11-05T00:00:00Z',
+      'deathDate' => '2012-01-24T00:00:00Z',
+      'nationality' => 'German',
+      'country' => 
+      array (
+        'id' => '90f15123-c1e3-481b-b799-3f14248a35f7',
+        'name' => 'Germany',
+        'alphaTwoCode' => 'DE',
+        'alphaThreeCode' => 'DEU',
+        'numCode' => 276,
+      ),
+    ),
+    6 => 
+    array (
+      'id' => '8c6dd90c-2592-4d0c-1eb9-08d9161fe7c5',
+      'firstName' => 'Fred',
+      'lastName' => 'Agabashian',
+      'birthDate' => '1913-08-21T00:00:00Z',
+      'deathDate' => '1989-10-13T00:00:00Z',
+      'nationality' => 'American',
+      'country' => 
+      array (
+        'id' => '8104cc87-132b-4ecb-a05d-c55f3d3a0b28',
+        'name' => 'United States of America',
+        'alphaTwoCode' => 'US',
+        'alphaThreeCode' => 'USA',
+        'numCode' => 840,
+      ),
+    ),
+    7 => 
+    array (
+      'id' => '4b2f5444-8b2d-435f-1eba-08d9161fe7c5',
+      'firstName' => 'Kurt',
+      'lastName' => 'Ahrens',
+      'birthDate' => '1940-04-19T00:00:00Z',
+      'nationality' => 'German',
+      'country' => 
+      array (
+        'id' => '90f15123-c1e3-481b-b799-3f14248a35f7',
+        'name' => 'Germany',
+        'alphaTwoCode' => 'DE',
+        'alphaThreeCode' => 'DEU',
+        'numCode' => 276,
+      ),
+    ),
+    8 => 
+    array (
+      'id' => '93686f1e-7a1c-496d-1ebb-08d9161fe7c5',
+      'firstName' => 'Jack',
+      'lastName' => 'Aitken',
+      'birthDate' => '1995-09-23T00:00:00Z',
+      'code' => 'AIT',
+      'number' => 89,
+      'nationality' => 'British',
+      'country' => 
+      array (
+        'id' => '19694fc2-7dba-4299-ad76-68c32594d591',
+        'name' => 'United Kingdom of Great Britain and Northern Ireland',
+        'alphaTwoCode' => 'GB',
+        'alphaThreeCode' => 'GBR',
+        'numCode' => 826,
+      ),
+    ),
+    9 => 
+    array (
+      'id' => 'bcd9f69f-3657-4314-1ebc-08d9161fe7c5',
+      'firstName' => 'Christijan',
+      'lastName' => 'Albers',
+      'birthDate' => '1979-04-16T00:00:00Z',
+      'code' => 'ALB',
+      'nationality' => 'Dutch',
+      'country' => 
+      array (
+        'id' => '4a0a39f5-120a-48ad-81af-b39882aec699',
+        'name' => 'Netherlands',
+        'alphaTwoCode' => 'NL',
+        'alphaThreeCode' => 'NLD',
+        'numCode' => 528,
+      ),
+    ),
+  ),
+  'currentPage' => 1,
+  'totalPages' => 88,
+  'pageSize' => 10,
+  'totalCount' => 874,
+  'itemsNumber' => 10,
+  'hasPrevious' => false,
+  'hasNext' => true,
+)
