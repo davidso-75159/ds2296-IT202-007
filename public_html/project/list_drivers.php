@@ -42,7 +42,6 @@ if (count($_GET) > 0) {
         }
     }
 
-    // Handle filtering
     $firstName = se($_GET, "firstName", "", false);
     if (!empty($firstName)) {
         $query .= " AND firstName LIKE :firstName";
@@ -79,7 +78,6 @@ if (count($_GET) > 0) {
         $params[":nationality"] = "%$nationality%";
     }
 
-    // Sorting logic
     $sort = se($_GET, "sort", "lastName", false);
     if (!in_array($sort, ["lastName", "number", "birthday", "nationality"])) {
         $sort = "lastName";
@@ -92,7 +90,6 @@ if (count($_GET) > 0) {
 
     $query .= " ORDER BY $sort $order";
 
-    // Pagination logic
     try {
         $limit = (int)se($_GET, "limit", "10", false);
     } catch (Exception $e) {
@@ -119,8 +116,10 @@ try {
 }
 
 $table = [
-    "data" => $results, "title" => "Matching Drivers", //"ignored_columns" => ["id"],
-    "edit_url" => get_url("admin/edit_driver.php"),"delete_url" => get_url("admin/delete_driver.php")
+    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
+    "view_url" => get_url("view_driver.php"),
+    "edit_url" => get_url("admin/edit_driver.php"),
+    "delete_url" => get_url("admin/delete_driver.php")
 ];
 
 ?>
