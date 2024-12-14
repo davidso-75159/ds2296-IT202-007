@@ -27,7 +27,7 @@ if (isset($_POST["action"])) {
                 }
                 flash("Successfully inserted driver No. $number", "success");
             } else {
-                flash("No driver found with No, $number", "warning");
+                flash("No driver found with No. $number", "warning");
             }
         } elseif ($action === "create") {
             foreach ($_POST as $k => $v) {
@@ -35,6 +35,7 @@ if (isset($_POST["action"])) {
                     unset($_POST[$k]);
                 }
                 $drivers= $_POST;
+                flash("Successfully inserted custom driver!", "success");
                 error_log("Cleaned up POST: " . var_export($drivers, true));
             }
         }
