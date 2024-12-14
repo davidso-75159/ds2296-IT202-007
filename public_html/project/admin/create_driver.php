@@ -22,10 +22,12 @@ if (isset($_POST["action"])) {
                         "code" => $item["code"],
                         "number" => $item["number"] ?? null,
                         "nationality" => $item["nationality"],
+                        "api_id" => $item["id"]
                     ];
                 }
+                flash("Successfully inserted driver No. $number", "success");
             } else {
-                flash("No driver found with number $number", "warning");
+                flash("No driver found with No, $number", "warning");
             }
         } elseif ($action === "create") {
             foreach ($_POST as $k => $v) {

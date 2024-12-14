@@ -18,7 +18,7 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
-$query = "SELECT firstName, lastName, birthday, code, number, nationality FROM `Drivers` WHERE 1=1";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality FROM `Drivers` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -119,7 +119,7 @@ try {
 }
 
 $table = [
-    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
+    "data" => $results, "title" => "Matching Drivers", //"ignored_columns" => ["id"],
     "edit_url" => get_url("admin/edit_driver.php"),"delete_url" => get_url("admin/delete_driver.php")
 ];
 
