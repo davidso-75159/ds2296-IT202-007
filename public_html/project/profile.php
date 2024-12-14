@@ -117,6 +117,7 @@ function validate(form) {
     let con = form.confirmPassword.value;
     let isValid = true;
 
+    // Check if email is provided
     if (em.length <= 0) {
         flash("Email is required", "warning");
         isValid = false;
@@ -125,6 +126,7 @@ function validate(form) {
         isValid = false;
     }
 
+    // Check if username is provided
     if (un.length <= 0) {
         flash("Username is required", "warning");
         isValid = false;
@@ -147,6 +149,7 @@ function validate(form) {
 
     return isValid;
 }
+
 </script>
 
 <?php
