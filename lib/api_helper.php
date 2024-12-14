@@ -14,8 +14,7 @@ require_once(__DIR__ . "/load_api_keys.php");
  * 
  * @return array The response status and body.
  */
-function _sendRequest($url, $key, $data = [], $method = 'GET', $isRapidAPI = true, $rapidAPIHost = "")
-{
+function _sendRequest($url, $key, $data = [], $method = 'GET', $isRapidAPI = true, $rapidAPIHost = "") {
     global $API_KEYS;
     // Check if the API key is set and not empty
     if (!isset($API_KEYS) || !isset($API_KEYS[$key]) || empty($API_KEYS[$key])) {
@@ -79,8 +78,7 @@ function _sendRequest($url, $key, $data = [], $method = 'GET', $isRapidAPI = tru
  * 
  * @return array The response status and body.
  */
-function get($url, $key, $data = [], $isRapidAPI = true, $rapidAPIHost = "")
-{
+function get($url, $key, $data = [], $isRapidAPI = true, $rapidAPIHost = "") {
     return _sendRequest($url, $key, $data, 'GET', $isRapidAPI, $rapidAPIHost);
 }
 
@@ -96,7 +94,6 @@ function get($url, $key, $data = [], $isRapidAPI = true, $rapidAPIHost = "")
  * 
  * @return array The response status and body.
  */
-function post($url, $key, $data = [], $isRapidAPI = true,  $rapidAPIHost = "")
-{
+function post($url, $key, $data = [], $isRapidAPI = true,  $rapidAPIHost = "") {
     return _sendRequest($url, $key, $data, 'POST', $isRapidAPI, $rapidAPIHost);
 }
