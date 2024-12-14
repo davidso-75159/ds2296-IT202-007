@@ -35,9 +35,9 @@ if (isset($_POST["action"])) {
                     unset($_POST[$k]);
                 }
                 $drivers= $_POST;
-                flash("Successfully inserted custom driver!", "success");
                 error_log("Cleaned up POST: " . var_export($drivers, true));
             }
+            flash("Successfully inserted custom driver!", "success");
         }
     }
 
