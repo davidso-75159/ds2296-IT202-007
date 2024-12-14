@@ -1,56 +1,49 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
+require_once(__DIR__ . "/../../partials/nav.php");
 ?>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email/Username</label>
-        <input type="text" name="email" required />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <input type="submit" value="Login"/>
-</form>
-
+<div class="container-fluid">
+    <form onsubmit="return validate(this)" method="POST">
+        <?php render_input(["type" => "text", "id" => "email", "name" => "email", "label" => "Email/Username", "rules" => ["required" => true]]); ?>
+        <?php render_input(["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
+        <?php render_button(["text" => "Login", "type" => "submit"]); ?>
+    </form>
+</div>
 <script>
-function validate(form) {
-    let unem = form.email.value;
-    let pw = form.password.value;
-    let isValid = true;
+    function validate(form) {
+        let unem = form.email.value;
+        let pw = form.password.value;
+        let isValid = true;
 
-    if (unem.length <= 0) {
-        flash("Email or Username is required", "warning");
-        isValid = false;
-    }
-
-    if (unem.indexOf("@") !== -1) {
-        if (!is_valid_email(unem)) {
-            flash("Invalid email format", "warning");
+        if (unem.length <= 0) {
+            flash("Email or Username is required", "warning");
             isValid = false;
         }
-    } else {
-        if (!is_valid_username(unem)) {
-            flash("Invalid username format", "warning");
+
+        if (unem.indexOf("@") !== -1) {
+            if (!is_valid_email(unem)) {
+                flash("Invalid email format", "warning");
+                isValid = false;
+            }
+        } else {
+            if (!is_valid_username(unem)) {
+                flash("Invalid username format", "warning");
+                isValid = false;
+            }
+        }
+
+        if (pw.length <= 0) {
+            flash("Password is required", "warning");
             isValid = false;
         }
+
+        if (!is_valid_password(pw)) {
+            flash("Password must be at least 8 characters long.", "warning");
+            isValid = false;
+        }
+
+        return isValid;
     }
-
-    if (pw.length <= 0) {
-        flash("Password is required", "warning");
-        isValid = false;
-    }
-
-    if (!is_valid_password(pw)) {
-        flash("Password must be at least 8 characters long.", "warning");
-        isValid = false;
-    }
-
-    return isValid;
-}
-
 </script>
-
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"])) {

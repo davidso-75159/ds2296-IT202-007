@@ -34,7 +34,7 @@ nav li {
     border-radius: 5px;
 }
 
-nav li a {
+nav li a, .nav-item.dropdown {
     color: crimson;
     text-decoration: none;
 }
