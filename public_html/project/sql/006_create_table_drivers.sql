@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS `Drivers` (
     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `firstName` VARCHAR(255) NOT NULL DEFAULT '',
-    `lastName` VARCHAR(255) NOT NULL DEFAULT '',
-    `birthday` DATE NOT NULL CHECK (birthday BETWEEN '1899-01-01' AND CURRENT_DATE),
-    `code` VARCHAR(3) NOT NULL DEFAULT '',
-    `number` TINYINT UNSIGNED CHECK (number > 0 AND number < 100),
-    `nationality` VARCHAR(255),
+    `firstName` VARCHAR(255) NOT NULL,
+    `lastName` VARCHAR(255) NOT NULL,
+    `birthday` DATE NOT NULL,
+    `code` VARCHAR(3) NOT NULL DEFAULT 'N/A',
+    `number` TINYINT,
+    `nationality` VARCHAR(255) NOT NULL,
     `api_id` VARCHAR(36) NOT NULL DEFAULT 'Custom Driver',
     `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+)
