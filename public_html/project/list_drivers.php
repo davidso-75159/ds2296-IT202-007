@@ -18,7 +18,8 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality FROM `Drivers` WHERE 1=1";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality FROM `Drivers`";
+$where = " WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -44,37 +45,37 @@ if (count($_GET) > 0) {
 
     $firstName = se($_GET, "firstName", "", false);
     if (!empty($firstName)) {
-        $query .= " AND firstName LIKE :firstName";
+        $where .= " AND firstName LIKE :firstName";
         $params[":firstName"] = "%$firstName%";
     }
 
     $lastName = se($_GET, "lastName", "", false);
     if (!empty($lastName)) {
-        $query .= " AND lastName LIKE :lastName";
+        $where .= " AND lastName LIKE :lastName";
         $params[":lastName"] = "%$lastName%";
     }
 
     $birthday = se($_GET, "birthday", "", false);
     if (!empty($birthday)) {
-        $query .= " AND birthday = :birthday";
+        $where .= " AND birthday = :birthday";
         $params[":birthday"] = $birthday;
     }
 
     $code = se($_GET, "code", "", false);
     if (!empty($code)) {
-        $query .= " AND code LIKE :code";
+        $where .= " AND code LIKE :code";
         $params[":code"] = "%$code%";
     }
 
     $number = se($_GET, "number", "", false);
     if (!empty($number) && ($number > 0 && $number < 100)) {
-        $query .= " AND number = :number";
+        $where .= " AND number = :number";
         $params[":number"] = $number;
     }
 
     $nationality = se($_GET, "nationality", "", false);
     if (!empty($nationality)) {
-        $query .= " AND nationality LIKE :nationality";
+        $where .= " AND nationality LIKE :nationality";
         $params[":nationality"] = "%$nationality%";
     }
 
@@ -87,18 +88,23 @@ if (count($_GET) > 0) {
     if (!in_array($order, ["asc", "desc"])) {
         $order = "desc";
     }
+    
+    $limit = 10;
+    if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
+        $limit = (int)$_GET["limit"];
+        if ($limit < 0 || $limit > 100) {
+            $limit = 10;
+        }
+    }
 
+    $query .= $where;
     $query .= " ORDER BY $sort $order";
-
-    try {
-        $limit = (int)se($_GET, "limit", "10", false);
-    } catch (Exception $e) {
-        $limit = 10;
+    $page = (int)se($_GET, "page", 1, false);
+    if ($page < 1) {
+        $page = 1;
     }
-    if ($limit < 1 || $limit > 100) {
-        $limit = 10;
-    }
-    $query .= " LIMIT $limit";
+    $offset = ($page - 1) * $limit;
+    $query .= " LIMIT $offset, $limit";
 }
 
 $db = getDB();
@@ -137,6 +143,9 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
     <?php render_table($table); ?>
+    <div class="row">
+        <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>
+    </div>
 </div>
 
 <?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
