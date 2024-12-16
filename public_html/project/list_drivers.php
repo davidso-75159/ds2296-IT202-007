@@ -124,6 +124,27 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+$total = 0;
+
+$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers $where";
+try {
+    $db = getDB();
+    $stmt = $db->prepare($sql);
+    if (isset($params[":user_id"])) {
+        unset($params[":user_id"]);
+    }
+    $stmt->execute($params);
+    $r = $stmt->fetch();
+    if ($r) {
+        $total = (int)$r["c"];
+    }
+} catch (PDOException $e) {
+    flash("Error fetching count", "danger");
+    error_log("Error fetching count: " . var_export($e, true));
+    error_log("Query: $sql");
+    error_log("Params: " . var_export($params, true));
+}
+
 $table = [
     "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
     "view_url" => get_url("view_driver.php"),
