@@ -18,11 +18,10 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
-$assoc_check = " (SELECT IFNULL(count(1), 0) FROM DriverAssociation WHERE user_id = :user_id and driver_id = Drivers.id LIMIT 1) as is_liked,";
 $params[":user_id"] = get_user_id();
 
-$query = "SELECT $assoc_check (id), firstName, lastName, birthday, code, number, nationality FROM `Drivers`";
-$where = " WHERE 1=1";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality FROM `Drivers`";
+$where = "  WHERE DriverAssociation.user_id = :user_id";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -126,7 +125,7 @@ try {
 
 $total = 0;
 
-$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers $where";
+$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id $where";
 try {
     $db = getDB();
     $stmt = $db->prepare($sql);
