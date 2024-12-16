@@ -18,7 +18,10 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality FROM `Drivers`";
+$assoc_check = " (SELECT IFNULL(count(1), 0) FROM DriverAssociation WHERE user_id = :user_id and driver_id = Drivers.id LIMIT 1) as is_liked,";
+$params[":user_id"] = get_user_id();
+
+$query = "SELECT $assoc_check (driver_id), firstName, lastName, birthday, code, number, nationality FROM `Drivers`";
 $where = " WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
