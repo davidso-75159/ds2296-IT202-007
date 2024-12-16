@@ -20,7 +20,7 @@ $form = [
 
 $params[":user_id"] = get_user_id();
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 0 as is_liked, FROM `Drivers`";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked, FROM `Drivers`";
 $where = "  WHERE DriverAssociation.user_id = :user_id";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -163,8 +163,17 @@ $table = [
             <?php endforeach; ?>
         </div>
         <?php render_button(["text" => "Filter", "type" => "submit"]); ?>
-        <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
+    <div class="row">
+        <div class="col">
+            Results <?php echo count($results) . "/" . $total; ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-warning" href="api/clear_liked.php">Clear List</a>
+        </div>
+    </div>
     <?php render_table($table); ?>
     <div class="row">
         <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>

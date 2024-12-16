@@ -18,9 +18,10 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
+$params[":user_id"] = get_user_id();
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 0 as is_liked, FROM `Drivers`";
-$where = "  WHERE not exists (SELECT driver_id FROM DriverAssociation where driver_id = Drivers.id LIMIT 1)";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked, (SELECT COUNT (user_id) FROM DriverAssociation WHERE driver_id = Drivers.id) as total_watched, FROM Drivers";
+$where = "  WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -124,7 +125,7 @@ try {
 
 $total = 0;
 
-$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers $where";
+$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id JOIN Users on Users.id = DriverAssociation.id $where";
 try {
     $db = getDB();
     $stmt = $db->prepare($sql);
@@ -161,12 +162,16 @@ $table = [
                 </div>
             <?php endforeach; ?>
         </div>
-        <?php render_button(["text" => "Filter", "type" => "submit"]); ?>
-        <a href="?clear" class="btn btn-secondary">Clear</a>
+        <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>
     <div class="row">
         <div class="col">
             Results <?php echo count($results) . "/" . $total; ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-warning" href="api/clear_liked.php">Clear List</a>
         </div>
     </div>
     <?php render_table($table); ?>
