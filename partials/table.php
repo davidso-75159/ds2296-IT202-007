@@ -92,7 +92,23 @@
                                     </form>
                                 <?php endif; ?>
                             </td>
+                        <?php endif; ?> <!-- end of if ($_has_atleast_one_url) :-->
+                        <?php if (is_logged_in() && isset($row[$_association_key])): ?>
+                            <td>
+                                <?php /* is_watched toggle */
+                                $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
+                                ?>
+                                <form method="POST" action="<?php echo get_url("api/toggle_watched.php"); ?>">
+                                    <input type="hidden" name="guideId" value="<?php se($row, "id"); ?>" />
+                                    <input type="hidden" name="toggleWatched" />
+                                    <input type="hidden" name="route" value="<?php echo $redirect_url ?>" />
+                                    <button style="background-color: transparent; border: none !important;">
+                                        <?php render_like(["value" => $row["is_watched"]]); ?>
+                                    </button>
+                                </form>
+                            </td>
                         <?php endif; ?>
+
                     </tr>
                 <?php endforeach; ?>
             <?php else : ?>
