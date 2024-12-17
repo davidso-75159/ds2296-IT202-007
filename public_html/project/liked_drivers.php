@@ -18,96 +18,83 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
+$params = [];
 $params[":user_id"] = get_user_id();
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked, FROM `Drivers`";
-$where = "  WHERE DriverAssociation.user_id = :user_id";
-$params = [];
-$session_key = $_SERVER["SCRIPT_NAME"];
-$is_clear = isset($_GET["clear"]);
-if ($is_clear) {
-    session_delete($session_key);
-    unset($_GET["clear"]);
-    die(header("Location: " . $session_key));
-} else {
-    $session_data = session_load($session_key);
+$query = "SELECT Drivers.id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked FROM Drivers JOIN DriverAssociation on DriverAssociation.id = Drivers.id";
+$where = " WHERE DriverAssociation.user_id = :user_id";
+
+foreach ($form as $k => $v) {
+    if (isset($_GET[$v["name"]])) {
+        $form[$k]["value"] = $_GET[$v["name"]];
+    }
 }
 
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
-    $_GET = $session_data;
+$firstName = se($_GET, "firstName", "", false);
+if (!empty($firstName)) {
+    $where .= " AND firstName LIKE :firstName";
+    $params[":firstName"] = "%$firstName%";
 }
 
-if (count($_GET) > 0) {
-    session_save($session_key, $_GET);
-    foreach ($form as $k => $v) {
-        if (isset($_GET[$v["name"]])) {
-            $form[$k]["value"] = $_GET[$v["name"]];
-        }
-    }
-
-    $firstName = se($_GET, "firstName", "", false);
-    if (!empty($firstName)) {
-        $where .= " AND firstName LIKE :firstName";
-        $params[":firstName"] = "%$firstName%";
-    }
-
-    $lastName = se($_GET, "lastName", "", false);
-    if (!empty($lastName)) {
-        $where .= " AND lastName LIKE :lastName";
-        $params[":lastName"] = "%$lastName%";
-    }
-
-    $birthday = se($_GET, "birthday", "", false);
-    if (!empty($birthday)) {
-        $where .= " AND birthday = :birthday";
-        $params[":birthday"] = $birthday;
-    }
-
-    $code = se($_GET, "code", "", false);
-    if (!empty($code)) {
-        $where .= " AND code LIKE :code";
-        $params[":code"] = "%$code%";
-    }
-
-    $number = se($_GET, "number", "", false);
-    if (!empty($number) && ($number > 0 && $number < 100)) {
-        $where .= " AND number = :number";
-        $params[":number"] = $number;
-    }
-
-    $nationality = se($_GET, "nationality", "", false);
-    if (!empty($nationality)) {
-        $where .= " AND nationality LIKE :nationality";
-        $params[":nationality"] = "%$nationality%";
-    }
-
-    $sort = se($_GET, "sort", "lastName", false);
-    if (!in_array($sort, ["lastName", "number", "birthday", "nationality"])) {
-        $sort = "lastName";
-    }
-
-    $order = se($_GET, "order", "desc", false);
-    if (!in_array($order, ["asc", "desc"])) {
-        $order = "desc";
-    }
-    
-    $limit = 10;
-    if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
-        $limit = (int)$_GET["limit"];
-        if ($limit < 0 || $limit > 100) {
-            $limit = 10;
-        }
-    }
-
-    $query .= $where;
-    $query .= " ORDER BY $sort $order";
-    $page = (int)se($_GET, "page", 1, false);
-    if ($page < 1) {
-        $page = 1;
-    }
-    $offset = ($page - 1) * $limit;
-    $query .= " LIMIT $offset, $limit";
+$lastName = se($_GET, "lastName", "", false);
+if (!empty($lastName)) {
+    $where .= " AND lastName LIKE :lastName";
+    $params[":lastName"] = "%$lastName%";
 }
+
+$birthday = se($_GET, "birthday", "", false);
+if (!empty($birthday)) {
+    $where .= " AND birthday = :birthday";
+    $params[":birthday"] = $birthday;
+}
+
+$code = se($_GET, "code", "", false);
+if (!empty($code)) {
+    $where .= " AND code LIKE :code";
+    $params[":code"] = "%$code%";
+}
+
+$number = se($_GET, "number", "", false);
+if (!empty($number) && ($number > 0 && $number < 100)) {
+    $where .= " AND number = :number";
+    $params[":number"] = $number;
+}
+
+$nationality = se($_GET, "nationality", "", false);
+if (!empty($nationality)) {
+    $where .= " AND nationality LIKE :nationality";
+    $params[":nationality"] = "%$nationality%";
+}
+
+$sort = se($_GET, "sort", "lastName", false);
+if (!in_array($sort, ["lastName", "number", "birthday", "nationality"])) {
+    $sort = "lastName";
+}
+
+$order = se($_GET, "order", "desc", false);
+if (!in_array($order, ["asc", "desc"])) {
+    $order = "desc";
+}
+
+$limit = 10;
+if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
+    $limit = (int)$_GET["limit"];
+    if ($limit < 0 || $limit > 100) {
+        $limit = 10;
+    }
+}
+
+$query .= $where;
+$query .= " ORDER BY $sort $order";
+$page = (int)se($_GET, "page", 1, false);
+if ($page < 1) {
+    $page = 1;
+}
+$offset = ($page - 1) * $limit;
+$query .= " LIMIT $offset, $limit";
+
+error_log("Query: $query");
+error_log("Params: " . var_export($params, true));
 
 $db = getDB();
 $stmt = $db->prepare($query);

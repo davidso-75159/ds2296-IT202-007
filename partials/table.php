@@ -17,7 +17,7 @@
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
-    $_association_key = se($data, "association_key", "is_watched", false);
+    $_association_key = se($data, "association_key", "is_liked", false);
     // maybe fetch the value here too and set to a variable
     
     // edge case that should consider a redesign
@@ -95,15 +95,15 @@
                         <?php endif; ?> <!-- end of if ($_has_atleast_one_url) :-->
                         <?php if (is_logged_in() && isset($row[$_association_key])): ?>
                             <td>
-                                <?php /* is_watched toggle */
+                                <?php /* is_liked toggle */
                                 $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
                                 ?>
-                                <form method="POST" action="<?php echo get_url("api/toggle_watched.php"); ?>">
+                                <form method="POST" action="<?php echo get_url("api/toggle_liked.php"); ?>">
                                     <input type="hidden" name="guideId" value="<?php se($row, "id"); ?>" />
-                                    <input type="hidden" name="toggleWatched" />
+                                    <input type="hidden" name="toggleliked" />
                                     <input type="hidden" name="route" value="<?php echo $redirect_url ?>" />
                                     <button style="background-color: transparent; border: none !important;">
-                                        <?php render_like(["value" => $row["is_watched"]]); ?>
+                                        <?php render_like(["value" => $row["is_liked"]]); ?>
                                     </button>
                                 </form>
                             </td>

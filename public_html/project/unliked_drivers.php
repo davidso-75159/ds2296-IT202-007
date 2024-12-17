@@ -18,8 +18,8 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Records per Page", "value" => 10],
 ];
 
-
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 0 as is_liked, FROM `Drivers`";
+$params = [];
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 0 as is_liked FROM `Drivers`";
 $where = "  WHERE not exists (SELECT driver_id FROM DriverAssociation where driver_id = Drivers.id LIMIT 1)";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
