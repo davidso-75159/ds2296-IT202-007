@@ -20,7 +20,10 @@ $form = [
 
 $params[":user_id"] = get_user_id();
 
-$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked, (SELECT COUNT (user_id) FROM DriverAssociation WHERE driver_id = Drivers.id) as total_watched, FROM Drivers";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked, 
+(SELECT COUNT (user_id) FROM DriverAssociation WHERE driver_id = Drivers.id) as total_liked FROM Drivers 
+JOIN DriverAssociation on driver_id = Drivers.id 
+JOIN Users on Users.id = DriverAssociation.id";
 $where = "  WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];

@@ -7,20 +7,20 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 //attempt to apply
-if (isset($_POST["users"]) && isset($_POST["roles"])) {
+if (isset($_POST["users"]) && isset($_POST["Drivers"])) {
     $user_ids = $_POST["users"]; //se() doesn't like arrays so we'll just do this
-    $role_ids = $_POST["roles"]; //se() doesn't like arrays so we'll just do this
-    if (empty($user_ids) || empty($role_ids)) {
-        flash("Both users and roles need to be selected", "warning");
+    $driver_ids = $_POST["Drivers"]; //se() doesn't like arrays so we'll just do this
+    if (empty($user_ids) || empty($driver_ids)) {
+        flash("Both users and Drivers need to be selected", "warning");
     } else {
         //for sake of simplicity, this will be a tad inefficient
         $db = getDB();
-        $stmt = $db->prepare("INSERT INTO UserRoles (user_id, role_id, is_active) VALUES (:uid, :rid, 1) 
-        ON DUPLICATE KEY UPDATE is_active = !is_active");
+        $stmt = $db->prepare("INSERT INTO DriverAssociation (user_id, driver_id, is_liked) VALUES (:uid, :did, 1) 
+        ON DUPLICATE KEY UPDATE is_liked = !is_liked");
         foreach ($user_ids as $uid) {
-            foreach ($role_ids as $rid) {
+            foreach ($driver_ids as $did) {
                 try {
-                    $stmt->execute([":uid" => $uid, ":rid" => $rid]);
+                    $stmt->execute([":uid" => $uid, ":did" => $did]);
                     flash("Updated role", "success");
                 } catch (PDOException $e) {
                     flash(var_export($e->errorInfo, true), "danger");
@@ -30,30 +30,15 @@ if (isset($_POST["users"]) && isset($_POST["roles"])) {
     }
 }
 
-//get active roles
-$active_roles = [];
-$db = getDB();
-$stmt = $db->prepare("SELECT id, name, description FROM Roles WHERE is_active = 1 LIMIT 10");
-try {
-    $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if ($results) {
-        $active_roles = $results;
-    }
-} catch (PDOException $e) {
-    flash(var_export($e->errorInfo, true), "danger");
-}
-
-//search for user by username
+//ds2296, 12/16/2024
 $users = [];
 $username = "";
 if (isset($_POST["username"])) {
     $username = se($_POST, "username", "", false);
     if (!empty($username)) {
         $db = getDB();
-        $stmt = $db->prepare("SELECT Users.id, username, 
-        (SELECT GROUP_CONCAT(name, ' (' , IF(ur.is_active = 1,'active','inactive') , ')') from 
-        UserRoles ur JOIN Roles on ur.role_id = Roles.id WHERE ur.user_id = Users.id) as roles
+        $stmt = $db->prepare("SELECT Users.id, username, (SELECT GROUP_CONCAT(Drivers.id) from 
+        DriverAssociation JOIN Drivers on DriverAssociation.driver_id = Drivers.id WHERE DriverAssociation.user_id = Users.id) as is_liked
         from Users WHERE username like :username");
         try {
             $stmt->execute([":username" => "%$username%"]);
@@ -72,7 +57,7 @@ if (isset($_POST["username"])) {
 
 ?>
 <div class="container-fluid">
-    <h1>Assign Roles</h1>
+    <h1>Assign Drivers</h1>
     <form method="POST">
         <?php render_input(["type" => "search", "name" => "username", "placeholder" => "Username Search", "value" => $username]);/*lazy value to check if form submitted, not ideal*/ ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
@@ -84,7 +69,7 @@ if (isset($_POST["username"])) {
         <table class="table">
             <thead>
                 <th>Users</th>
-                <th>Roles to Assign</th>
+                <th>Liked Drivers</th>
             </thead>
             <tbody>
                 <tr>
@@ -95,22 +80,15 @@ if (isset($_POST["username"])) {
                                     <td>
                                         <?php render_input(["type" => "checkbox", "id" => "user_" . se($user, 'id', "", false), "name" => "users[]", "label" => se($user, "username", "", false), "value" => se($user, 'id', "", false)]); ?>
                                     </td>
-                                    <td><?php se($user, "roles", "No Roles"); ?></td>
+                                    <td><?php se($user, "drivers", "No Drivers"); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
                     </td>
-                    <td>
-                        <?php foreach ($active_roles as $role) : ?>
-                            <div>
-                                <?php render_input(["type" => "checkbox", "id" => "role_" . se($role, 'id', "", false), "name" => "roles[]", "label" => se($role, "name", "", false), "value" => se($role, 'id', "", false)]); ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </td>
                 </tr>
             </tbody>
         </table>
-        <?php render_button(["text" => "Toggle Roles", "type" => "submit", "color" => "secondary"]); ?>
+        <?php render_button(["text" => "Toggle Drivers", "type" => "submit", "color" => "secondary"]); ?>
     </form>
 </div>
 <?php
