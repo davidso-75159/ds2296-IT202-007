@@ -106,8 +106,10 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching drivers " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
+    error_log("Error fetching drivers " . var_export($e, true));
+    error_log("Query: $query");
+    error_log("Params: " . var_export($params, true));
 }
 
 $total = 0;
@@ -116,9 +118,6 @@ $sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociati
 try {
     $db = getDB();
     $stmt = $db->prepare($sql);
-    if (isset($params[":user_id"])) {
-        unset($params[":user_id"]);
-    }
     $stmt->execute($params);
     $r = $stmt->fetch();
     if ($r) {

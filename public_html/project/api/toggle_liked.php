@@ -2,7 +2,7 @@
 session_start();
 require(__DIR__ . "/../../../lib/functions.php");
 
-if (isset($_POST["toggleWatched"])) {
+if (isset($_POST["toggleLiked"])) {
     $driverId = se($_POST, "driverId", -1, false);
     $userId = get_user_id();
     if ($userId) {
@@ -10,9 +10,9 @@ if (isset($_POST["toggleWatched"])) {
         $params = [":driver_id" => $driverId, ":user_id" => $userId];
         $needsDelete = false;
         try {
-            $stmt = $db->prepare("INSERT INTO DriverAssociation (driver_id, user_id) VALUES (:driver_id, :user_id)");
+            $stmt = $db->prepare("INSERT INTO DriverAssociation (user_id, driver_id) VALUES (:user_id, :driver_id)");
             $stmt->execute($params);
-            flash("Added to watch list", "success");
+            flash("Added to liked drivers", "success");
         } catch (PDOException $e) {
             // use duplicate error as a delete trigger
             if ($e->errorInfo[1] == 1062) {
@@ -24,7 +24,7 @@ if (isset($_POST["toggleWatched"])) {
         }
         if ($needsDelete) {
             try {
-                $stmt = $db->prepare("DELETE FROM SC_UserGuides WHERE driver_id = :driver_id AND user_id = :user_id");
+                $stmt = $db->prepare("DELETE FROM DriverAssociation WHERE driver_id = :driver_id AND user_id = :user_id");
                 $stmt->execute($params);
                 flash("Unliked Driver", "success");
             } catch (PDOException $e) {
@@ -41,5 +41,5 @@ if (isset($_POST["toggleWatched"])) {
     }
     die(header("Location: $refer"));
 }
-flash("Error toggling watched", "danger");
+flash("Error toggling liked", "danger");
 die(header("Location: " . get_url("home.php")));

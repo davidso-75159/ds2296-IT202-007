@@ -25,7 +25,7 @@ if (isset($_POST["users"]) && isset($_POST["drivers"])) {
                     $stmt->execute([":uid" => $uid, ":did" => $did]);
                     flash("Updated driver likes", "success");
                 } catch (PDOException $e) {
-                    flash(var_export($e->errorInfo, true), "danger");
+                    error_log(var_export($e, true));
                 }
             }
         }
@@ -36,7 +36,7 @@ if (isset($_POST["username"])) {
     $username = se($_POST, "username", "", false);
     if (!empty($username)) {
         $db = getDB();
-        $stmt = $db->prepare("SELECT Users.id, username, (SELECT GROUP_CONCAT(Drivers.name) FROM DriverAssociation JOIN Drivers ON DriverAssociation.driver_id = Drivers.id WHERE DriverAssociation.user_id = Users.id) as is_liked
+        $stmt = $db->prepare("SELECT Users.id, username, (SELECT GROUP_CONCAT(Drivers.firstName, ' ', Drivers.lastName) FROM DriverAssociation JOIN Drivers ON DriverAssociation.driver_id = Drivers.id WHERE DriverAssociation.user_id = Users.id) as is_liked
                               FROM Users WHERE username LIKE :username");
         try {
             $stmt->execute([":username" => "%$username%"]);
@@ -47,7 +47,7 @@ if (isset($_POST["username"])) {
                 flash("No users found", "warning");
             }
         } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
+            error_log(var_export($e, true));
         }
     } else {
         flash("Username must not be empty", "warning");
@@ -55,12 +55,12 @@ if (isset($_POST["username"])) {
 }
 
 $db = getDB();
-$stmt = $db->prepare("SELECT id, name FROM Drivers");
+$stmt = $db->prepare("SELECT id, firstName, lastName FROM Drivers");
 try {
     $stmt->execute();
     $drivers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    flash(var_export($e->errorInfo, true), "danger");
+    flash(var_export($e, true), "danger");
 }
 
 ?>
@@ -89,22 +89,6 @@ try {
                         </td>
                         <td>
                             <?php echo $user['is_liked'] ? $user['is_liked'] : 'No Drivers'; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Drivers</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($drivers as $driver) : ?>
-                    <tr>
-                        <td>
-                            <?php render_input(["type" => "checkbox", "id" => "driver_" . se($driver, 'id', "", false), "name" => "drivers[]", "label" => se($driver, "name", "", false), "value" => se($driver, 'id', "", false)]); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

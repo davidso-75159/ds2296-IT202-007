@@ -99,8 +99,8 @@
                                 $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
                                 ?>
                                 <form method="POST" action="<?php echo get_url("api/toggle_liked.php"); ?>">
-                                    <input type="hidden" name="guideId" value="<?php se($row, "id"); ?>" />
-                                    <input type="hidden" name="toggleliked" />
+                                    <input type="hidden" name="driverId" value="<?php se($row, "id"); ?>" />
+                                    <input type="hidden" name="toggleLiked" />
                                     <input type="hidden" name="route" value="<?php echo $redirect_url ?>" />
                                     <button style="background-color: transparent; border: none !important;">
                                         <?php render_like(["value" => $row["is_liked"]]); ?>

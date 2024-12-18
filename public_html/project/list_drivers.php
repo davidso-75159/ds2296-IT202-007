@@ -148,7 +148,7 @@ try {
 }
 
 $table = [
-    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
+    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id", "is_liked"],
     "view_url" => get_url("view_driver.php"),
     "edit_url" => get_url("admin/edit_driver.php"),
     "delete_url" => get_url("admin/delete_driver.php")
