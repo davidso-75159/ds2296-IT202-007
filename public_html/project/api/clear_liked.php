@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 require(__DIR__ . "/../../../lib/functions.php");
 
@@ -10,7 +9,7 @@ if(!has_role("Admin") && $user_id != get_user_id()){
 
 try {
     $db = getDB();
-    $query = "DELETE FROM SC_UserGuides WHERE user_id = :user_id";
+    $query = "DELETE FROM DriverAssociation WHERE user_id = :user_id";
     $params = [":user_id"=>$user_id];
     $stmt = $db->prepare($query);
     $stmt->execute($params);

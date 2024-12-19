@@ -1,7 +1,6 @@
 <?php
 session_start();
 require(__DIR__ . "/../../../lib/functions.php");
-
 if (isset($_POST["toggleLiked"])) {
     $driverId = se($_POST, "driverId", -1, false);
     $userId = get_user_id();
