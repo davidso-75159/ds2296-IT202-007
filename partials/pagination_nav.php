@@ -2,49 +2,51 @@
 if (!isset($total)) {
     flash("Note to Dev: The total variable is undefined", "danger");
     error_log("Note to Dev: The total variable is undefined");
-    $total = 1;
+    $total = 0;
 }
 
-$per_page = (int)se($_GET, "limit", "10", false);
+$per_page = (int)se($_GET, "limit", 10, false);
 $page = (int)se($_GET, "page", 1, false);
-$pages = $total/$per_page;
-if ($pages < 1) {
-    $pages = ceil($pages);
-} else {
-    $pages = round($pages);
+$total_pages = ceil($total / $per_page);
+
+// Handle edge cases
+if ($total <= 0) {
+    $total_pages = 1;
+}
+if ($page > $total_pages) {
+    $page = $total_pages;
 }
 
-$total_pages = $pages;
-//updates or inserts page into query string while persisting anything already present
 function persistQueryString($page) {
-    //set the query param for easily building
     $_GET["page"] = $page;
-    //https://www.php.net/manual/en/function.http-build-query.php
     return http_build_query($_GET);
 }
 
 function disable_prev($page) {
-    echo $page < 1 ? "disabled" : "";
+    echo $page <= 1 ? "disabled" : "";
 }
+
+function disable_next($page, $total_pages) {
+    echo $page >= $total_pages ? "disabled" : "";
+}
+
 function set_active($page, $i) {
-    echo ($page - 1) == $i ? "active" : "";
-}
-function disable_next($page) {
-    global $total_pages;
-    echo ($page) >= $total_pages ? "disabled" : "";
+    echo $page == $i + 1 ? "active" : "";
 }
 ?>
 
-<nav aria-label="Page navigation example I hope I get changed">
+<nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-        <li class="page-item <?php disable_prev(($page - 1)) ?>">
-            <a class="page-link" href="?<?php se(persistQueryString($page - 1)); ?>" tabindex="-1">Previous</a>
+        <li class="page-item <?php disable_prev($page); ?>">
+            <a class="page-link" href="?<?php echo persistQueryString($page - 1); ?>" tabindex="-1">Previous</a>
         </li>
         <?php for ($i = 0; $i < $total_pages; $i++) : ?>
-            <li class="page-item <?php set_active($page, $i); ?>"><a class="page-link" href="?<?php se(persistQueryString($i + 1)); ?>"><?php echo ($i + 1); ?></a></li>
+            <li class="page-item <?php set_active($page, $i); ?>">
+                <a class="page-link" href="?<?php echo persistQueryString($i + 1); ?>"><?php echo $i + 1; ?></a>
+            </li>
         <?php endfor; ?>
-        <li class="page-item <?php disable_next($page); ?>">
-            <a class="page-link" href="?<?php se(persistQueryString($page + 1)); ?>">Next</a>
+        <li class="page-item <?php disable_next($page, $total_pages); ?>">
+            <a class="page-link" href="?<?php echo persistQueryString($page + 1); ?>">Next</a>
         </li>
     </ul>
 </nav>

@@ -25,20 +25,6 @@ JOIN DriverAssociation on driver_id = Drivers.id
 JOIN Users on DriverAssociation.user_id = Users.id";
 $where = "  WHERE 1=1";
 
-$session_key = $_SERVER["SCRIPT_NAME"];
-$is_clear = isset($_GET["clear"]);
-if ($is_clear) {
-    session_delete($session_key);
-    unset($_GET["clear"]);
-    die(header("Location: " . $session_key));
-} else {
-    $session_data = session_load($session_key);
-}
-
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
-    $_GET = $session_data;
-}
-
 foreach ($form as $k => $v) {
     if (isset($_GET[$v["name"]])) {
         $form[$k]["value"] = $_GET[$v["name"]];
@@ -99,34 +85,10 @@ if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
     }
 }
 
-$query .= $where;
-$query .= " ORDER BY $sort $order";
-$page = (int)se($_GET, "page", 1, false);
-if ($page < 1) {
-    $page = 1;
-}
-$offset = ($page - 1) * $limit;
-$query .= " LIMIT $offset, $limit";
-
-$db = getDB();
-$stmt = $db->prepare($query);
-$results = [];
-try {
-    $stmt->execute($params);
-    $r = $stmt->fetchAll();
-    if ($r) {
-        $results = $r;
-    }
-} catch (PDOException $e) {
-    flash("Unhandled error occurred", "danger");
-    error_log("Error fetching drivers " . var_export($e, true));
-    error_log("Query: $query");
-    error_log("Params: " . var_export($params, true));
-}
-
 $total = 0;
-
-$sql = "SELECT count(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id JOIN Users on DriverAssociation.user_id = Users.id  $where";
+$sql = "SELECT count(DISTINCT Drivers.id) AS c FROM Drivers 
+JOIN DriverAssociation on driver_id = Drivers.id 
+JOIN Users on DriverAssociation.user_id = Users.id $where";
 try {
     $db = getDB();
     $stmt = $db->prepare($sql);
@@ -142,6 +104,39 @@ try {
     flash("Error fetching count", "danger");
     error_log("Error fetching count: " . var_export($e, true));
     error_log("Query: $sql");
+    error_log("Params: " . var_export($params, true));
+}
+
+$total_pages = ceil($total / $limit);
+if ($total <= 0) {
+    $total_pages = 1;
+}
+
+$page = (int)se($_GET, "page", 1, false);
+if ($page < 1) {
+    $page = 1;
+} elseif ($page > $total_pages) {
+    $page = $total_pages;
+}
+
+$offset = ($page - 1) * $limit;
+$query .= $where;
+$query .= " ORDER BY $sort $order";
+$query .= " LIMIT $offset, $limit";
+
+$db = getDB();
+$stmt = $db->prepare($query);
+$results = [];
+try {
+    $stmt->execute($params);
+    $r = $stmt->fetchAll();
+    if ($r) {
+        $results = $r;
+    }
+} catch (PDOException $e) {
+    flash("Unhandled error occurred", "danger");
+    error_log("Error fetching drivers " . var_export($e, true));
+    error_log("Query: $query");
     error_log("Params: " . var_export($params, true));
 }
 
