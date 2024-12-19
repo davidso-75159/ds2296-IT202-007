@@ -19,11 +19,8 @@ $form = [
 ];
 
 $params = [];
-$assoc_check = " (SELECT IFNULL(count(1), 0) FROM DriverAssociation WHERE user_id = :user_id and driver_id = Drivers.id LIMIT 1) as is_liked,";
-$params[":user_id"] = get_user_id();
-
-$query = "SELECT $assoc_check id, firstName, lastName, birthday, code, number, nationality FROM Drivers";
-$where = " WHERE 1=1";
+$query = "SELECT id, firstName, lastName, birthday, code, number, nationality, 0 as is_liked FROM `Drivers`";
+$where = "  WHERE not exists (SELECT driver_id FROM DriverAssociation where driver_id = Drivers.id LIMIT 1)";
 
 foreach ($form as $k => $v) {
     if (isset($_GET[$v["name"]])) {
@@ -85,15 +82,6 @@ if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
     }
 }
 
-$query .= $where;
-$query .= " ORDER BY $sort $order";
-$page = (int)se($_GET, "page", 1, false);
-if ($page < 1) {
-    $page = 1;
-}
-$offset = ($page - 1) * $limit;
-$query .= " LIMIT $offset, $limit";
-
 $total = 0;
 $sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers $where";
 try {
@@ -148,7 +136,7 @@ try {
 }
 
 $table = [
-    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id", "is_liked"],
+    "data" => $results, "title" => "Matching Drivers", "ignored_columns" => ["id"],
     "view_url" => get_url("view_driver.php"),
     "edit_url" => get_url("admin/edit_driver.php"),
     "delete_url" => get_url("admin/delete_driver.php")
@@ -168,6 +156,11 @@ $table = [
         <?php render_button(["text" => "Filter", "type" => "submit"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
+    <div class="row">
+        <div class="col">
+            Results <?php echo count($results) . "/" . $total; ?>
+        </div>
+    </div>
     <?php render_table($table); ?>
     <div class="row">
         <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>
