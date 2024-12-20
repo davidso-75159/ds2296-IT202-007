@@ -14,7 +14,7 @@ if (isset($_POST["users"]) && isset($_POST["drivers"])) {
     $user_ids = $_POST["users"];
     $driver_ids = $_POST["drivers"];
     if (empty($user_ids) || empty($driver_ids)) {
-        flash("Both users and Drivers need to be selected", "warning");
+        flash("Both users and drivers need to be selected", "warning");
     } else {
         $db = getDB();
         $stmt = $db->prepare("INSERT INTO DriverAssociation (user_id, driver_id, is_liked) 
