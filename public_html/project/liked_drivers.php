@@ -21,7 +21,7 @@ $form = [
 $params = [];
 $params[":user_id"] = get_user_id();
 
-$query = "SELECT Drivers.id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked FROM Drivers JOIN DriverAssociation on DriverAssociation.id = Drivers.id";
+$query = "SELECT Drivers.id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id";
 $where = " WHERE DriverAssociation.user_id = :user_id";
 
 foreach ($form as $k => $v) {
