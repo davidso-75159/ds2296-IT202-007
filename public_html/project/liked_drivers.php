@@ -20,6 +20,7 @@ $form = [
 
 $params = [];
 $params[":user_id"] = get_user_id();
+
 $query = "SELECT Drivers.id, firstName, lastName, birthday, code, number, nationality, 1 as is_liked FROM Drivers JOIN DriverAssociation on DriverAssociation.id = Drivers.id";
 $where = " WHERE DriverAssociation.user_id = :user_id";
 
@@ -83,42 +84,17 @@ if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
     }
 }
 
-$total = 0;
-$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id $where";
-try {
-    $db = getDB();
-    $stmt = $db->prepare($sql);
-    if (isset($params[":user_id"])) {
-        unset($params[":user_id"]);
-    }
-    $stmt->execute($params);
-    $r = $stmt->fetch();
-    if ($r) {
-        $total = (int)$r["c"];
-    }
-} catch (PDOException $e) {
-    flash("Error fetching count", "danger");
-    error_log("Error fetching count: " . var_export($e, true));
-    error_log("Query: $sql");
-    error_log("Params: " . var_export($params, true));
-}
-
-$total_pages = ceil($total / $limit);
-if ($total <= 0) {
-    $total_pages = 1;
-}
-
+$query .= $where;
+$query .= " ORDER BY $sort $order";
 $page = (int)se($_GET, "page", 1, false);
 if ($page < 1) {
     $page = 1;
-} elseif ($page > $total_pages) {
-    $page = $total_pages;
 }
-
 $offset = ($page - 1) * $limit;
-$query .= $where;
-$query .= " ORDER BY $sort $order";
 $query .= " LIMIT $offset, $limit";
+
+error_log("Query: $query");
+error_log("Params: " . var_export($params, true));
 
 $db = getDB();
 $stmt = $db->prepare($query);
@@ -130,9 +106,25 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    flash("Unhandled error occurred", "danger");
     error_log("Error fetching drivers " . var_export($e, true));
-    error_log("Query: $query");
+    flash("Unhandled error occurred", "danger");
+}
+
+$total = 0;
+
+$sql = "SELECT COUNT(DISTINCT Drivers.id) AS c FROM Drivers JOIN DriverAssociation on driver_id = Drivers.id $where";
+try {
+    $db = getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    $r = $stmt->fetch();
+    if ($r) {
+        $total = (int)$r["c"];
+    }
+} catch (PDOException $e) {
+    flash("Error fetching count", "danger");
+    // error_log("Error fetching count: " . var_export($e, true));
+    error_log("Query: $sql");
     error_log("Params: " . var_export($params, true));
 }
 
